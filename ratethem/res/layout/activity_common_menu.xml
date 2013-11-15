@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignRight="@+id/Books"
+        android:layout_marginTop="16dp"
+        android:text="Click on the categories to rate" />
+
+    <Button
+        android:id="@+id/Clothing"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/HomeCare"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="22dp"
+        android:text="Clothing" />
+
+    <Button
+        android:id="@+id/Food"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/HomeCare"
+        android:layout_below="@+id/textView1"
+        android:layout_marginTop="35dp"
+        android:text="Food" />
+
+    <Button
+        android:id="@+id/Electronics"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/Food"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:text="Electronics" />
+
+    <Button
+        android:id="@+id/HomeCare"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/Electronics"
+        android:layout_centerVertical="true"
+        android:text="HomeCare" />
+
+</RelativeLayout>
