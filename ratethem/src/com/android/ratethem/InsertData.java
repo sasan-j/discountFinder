@@ -91,7 +91,7 @@ public class InsertData extends Activity {
 
 	InsertData CameraActivity = null;
 
-	private Bitmap mPhoto;
+	private Bitmap mPhoto = null;
 
 	private String mCriteria = null;
 
@@ -274,10 +274,16 @@ public class InsertData extends Activity {
 			case CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE:
 				// Get the information about the picture taken by camera and
 				// display a thumbnail of the picture.
-				mPhoto = (Bitmap) data.getExtras().get("data");
-				Log.d(TAG, "Bitmap: " + mPhoto);
-				mImage.setImageBitmap(Bitmap.createScaledBitmap(mPhoto,
-						mImage.getWidth(), mImage.getHeight(), false));
+				if (null != data) {
+					mPhoto = (Bitmap) data.getExtras().get("data");
+					Log.d(TAG, "Bitmap: " + mPhoto);
+					mImage.setImageBitmap(Bitmap.createScaledBitmap(mPhoto,
+							mImage.getWidth(), mImage.getHeight(), false));
+				} else {
+					Toast.makeText(InsertData.this,
+							"Couldn't capture image!!!", Toast.LENGTH_SHORT)
+							.show();
+				}
 			}
 		}
 	}
@@ -358,12 +364,16 @@ public class InsertData extends Activity {
 
 	/**
 	 * Transform bitmap to byteArray.
+	 * 
 	 * @return
 	 */
 	private byte[] getImageByte() {
+		byte[] bArray = null;
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
-		mPhoto.compress(Bitmap.CompressFormat.PNG, 100, bos);
-		byte[] bArray = bos.toByteArray();
+		if (null != mPhoto) {
+			mPhoto.compress(Bitmap.CompressFormat.PNG, 100, bos);
+			bArray = bos.toByteArray();
+		}
 		return bArray;
 	}
 
