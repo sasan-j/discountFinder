@@ -1,5 +1,5 @@
 package com.android.ratethem;
-
+//testing
 //import com.androidexample.cameraphotocapture.CameraPhotoCapture;
 
 import java.io.ByteArrayInputStream;
