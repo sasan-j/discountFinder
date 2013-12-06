@@ -26,7 +26,9 @@
         android:id="@+id/ratingBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_alignTop="@+id/pic" />
-
+        android:layout_toRightOf="@id/pic"
+        style="?android:attr/ratingBarStyleSmall"
+        android:layout_below="@id/loc_info"
+        android:numStars="5"/>
+    
 </RelativeLayout>

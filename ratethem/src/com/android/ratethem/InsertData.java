@@ -7,17 +7,28 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import com.android.ratethem.R;
 import com.android.ratethem.providers.RateAgent;
+import com.android.ratethem.server.ServerPost;
+import com.android.ratethem.util.RateThemUtil;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.ContentProviderClient;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -29,6 +40,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -37,33 +49,63 @@ import android.widget.Toast;
 
 public class InsertData extends Activity {
 
-	private Button takepic, done;
-	protected static final String TAG = "RateThem_S3";
+	private ImageButton takepic, done;
+
+	protected static final String TAG = "ratethem";
+
 	private RatingBar ratingBar;
+
 	private File mImageFile;
-	
+
 	private String mItemName = null;
 
 	final static int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 1;
+
 	private static final int FILE = 7;
+
 	public static final Uri RATE_URI = Uri
-            .parse("content://com.android.ratethem.providers.RateContentProvider" + "/"
-                    + RateAgent.RateProvider.TABLE_NAME);
+			.parse("content://com.android.ratethem.providers.RateContentProvider"
+					+ "/" + RateAgent.RateProvider.TABLE_NAME);
 
 	Uri imageUri = null;
+
 	static TextView imageDetails = null;
+
 	private ImageView mImage;
-	private EditText mLocation;
-	private EditText mViews;
+
+	private EditText mPlaceEdit;
+
+	private EditText mLocationEdit;
+
+	private EditText mViewsEdit;
+
+	private TextView mPlaceInfo;
+
+	private TextView mLocationInfo;
+
+	private TextView mViewsInfo;
+
+	private String mLatitude = null;
+
+	private String mLongitude = null;
+
 	InsertData CameraActivity = null;
-	
+
 	private Bitmap mPhoto;
-	
+
 	private String mCriteria = null;
-	
-	private TextView mLocInformation;
-	
-	private TextView mViewInfo;
+
+	private String mSearch = null;
+
+	private String mPublish = null;
+
+	private String mPlaceInformation = null;
+
+	private String mRatings = null;
+
+	private String mLocationInformation = null;
+
+	private String mYourViews = null;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -71,68 +113,91 @@ public class InsertData extends Activity {
 		setContentView(R.layout.activity_insert_data);
 
 		CameraActivity = this;
-		
-		Bundle extras = getIntent().getExtras();
-		if(extras != null){
-			mItemName = extras.getString("item_name");
-			mCriteria = extras.getString("criteria");
-		}
 
+		// Get the extras from calling activity.
+		Bundle extras = getIntent().getExtras();
+		if (extras != null) {
+			mItemName = extras.getString(RateThemUtil.ITEM_NAME);
+			mCriteria = extras.getString(RateThemUtil.CRITERIA);
+		}
+		Log.d(TAG, "Criteria sent: " + mCriteria);
 		mImage = (ImageView) findViewById(R.id.showImg);
-		mLocation = (EditText) findViewById(R.id.location);
-		mViews = (EditText) findViewById(R.id.your_view);
-		mLocInformation = (TextView) findViewById(R.id.location_info);
-		mViewInfo = (TextView) findViewById(R.id.your_view_info);
-		Log.d(TAG, "mLocInformation: "+mLocInformation);
-		Log.d(TAG, "mViewInfo: "+mViewInfo);
+		mPlaceEdit = (EditText) findViewById(R.id.place_name);
+		mLocationEdit = (EditText) findViewById(R.id.location);
+		mViewsEdit = (EditText) findViewById(R.id.your_view);
+		mPlaceInfo = (TextView) findViewById(R.id.place_name_info);
+		mLocationInfo = (TextView) findViewById(R.id.location_info);
+		mViewsInfo = (TextView) findViewById(R.id.your_view_info);
+		Log.d(TAG, "mLocInformation: " + mLocationInfo);
+		Log.d(TAG, "mViewInfo: " + mViewsInfo);
+		mSearch = getString(R.string.search);
+		mPublish = getString(R.string.publish);
+		Log.d(TAG, "Strings for Search and publish: " + mSearch + " : "
+				+ mPublish);
+		// instantiate the buttons and add listener.
 		initButton();
+		// instantiate rating bar and add listener.
 		initRatingBar();
-		if("Search".equals(mCriteria)){
+		// Since this activity is used for both posting data and displaying data
+		// certain items are made visible and invisible based on criteria.
+		if (mSearch.equals(mCriteria)) {
 			takepic.setVisibility(View.GONE);
 			done.setVisibility(View.GONE);
-			mLocation.setVisibility(View.GONE);
-			mViews.setVisibility(View.GONE);
-			mLocInformation.setVisibility(View.VISIBLE);
-			mViewInfo.setVisibility(View.VISIBLE);
-			String locationInfo = extras.getString("location");
-			String rateInfo = extras.getString("rate");
-			String commentInfo = extras.getString("comment");
-			byte[] picInfo = extras.getByteArray("pic");
-			mImage.setImageBitmap(BitmapFactory.decodeStream(new ByteArrayInputStream(picInfo)));
-			mLocInformation.setText(locationInfo);
-			mViewInfo.setText(commentInfo);			
+			mPlaceEdit.setVisibility(View.GONE);
+			mLocationEdit.setVisibility(View.GONE);
+			mViewsEdit.setVisibility(View.GONE);
+			mPlaceInfo.setVisibility(View.VISIBLE);
+			mLocationInfo.setVisibility(View.VISIBLE);
+			mViewsInfo.setVisibility(View.VISIBLE);
+			String placeInfo = extras.getString(RateThemUtil.ITEM_PLACE_NAME);
+			String locationInfo = extras.getString(RateThemUtil.ITEM_LOC);
+			String rateInfo = extras.getString(RateThemUtil.ITEM_RATING);
+			String commentInfo = extras.getString(RateThemUtil.ITEM_COMMENT);
+			byte[] picInfo = extras.getByteArray(RateThemUtil.ITEM_PIC);
+			mPlaceInfo.setText(placeInfo);
+			mImage.setImageBitmap(BitmapFactory
+					.decodeStream(new ByteArrayInputStream(picInfo)));
+			mLocationInfo.setText(locationInfo);
+			mViewsInfo.setText(commentInfo);
 			ratingBar.setRating(Float.parseFloat(rateInfo));
-		}else if("Publish".equals(mCriteria)){
-			mLocInformation.setVisibility(View.GONE);
-			mViewInfo.setVisibility(View.GONE);
-			mLocation.setVisibility(View.VISIBLE);
-			mViews.setVisibility(View.VISIBLE);
-		}	
+		} else if (mPublish.equals(mCriteria)) {
+			mPlaceEdit.setVisibility(View.VISIBLE);
+			mLocationEdit.setVisibility(View.VISIBLE);
+			mViewsEdit.setVisibility(View.VISIBLE);
+			mPlaceInfo.setVisibility(View.GONE);
+			mLocationInfo.setVisibility(View.GONE);
+			mViewsInfo.setVisibility(View.GONE);
+
+		}
 
 	}
 
 	public void initButton() {
 		// Display button Taking Pictures
-		takepic = (Button) findViewById(R.id.TakePic);
+		takepic = (ImageButton) findViewById(R.id.TakePic);
 
 		// Display button click listener
 		takepic.setOnClickListener((OnClickListener) TakePicListner);
 
-		done = (Button) findViewById(R.id.Done); 
+		done = (ImageButton) findViewById(R.id.Done);
 		done.setOnClickListener((OnClickListener) DoneListener);
 
 	}
-	
-	private View.OnClickListener DoneListener = new View.OnClickListener() {	
+
+	private View.OnClickListener DoneListener = new View.OnClickListener() {
 		@Override
 		public void onClick(View v) {
-			insertInformation();			
+			insertInformation();
+			Toast.makeText(v.getContext(), "Information added!!!",
+					Toast.LENGTH_SHORT).show();
+			finish();
 		}
 	};
 
 	private View.OnClickListener TakePicListner = new View.OnClickListener() {
 		@Override
 		public void onClick(View v) {
+			// launch camera to take picture
 			launchCamera();
 			// String fileName = "Camera_Example.jpg";
 			//
@@ -167,6 +232,11 @@ public class InsertData extends Activity {
 		}
 	};
 
+	/**
+	 * Method to launch camera to take picture. Camera is launched with
+	 * startActivityForResult so that after picture taken its sent to calling
+	 * activity which is this in this case.
+	 */
 	private void launchCamera() {
 		Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
 		File imgFolder = new File(Environment.getExternalStorageDirectory()
@@ -182,22 +252,24 @@ public class InsertData extends Activity {
 	}
 
 	/**
-	 * Method to capture data sent back from activity launched by startActivityResult.
+	 * Method to capture data sent back from activity launched by
+	 * startActivityResult.
 	 */
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
+		Log.d(TAG, "coming to onActivity result: " + resultCode);
 		if (resultCode == RESULT_OK) {
-			if("Search".equals(mCriteria)){
-				
-			}else if("Publish".equals(mCriteria)){
-				if(mLocation.getVisibility()== View.GONE){
-					mLocation.setVisibility(View.VISIBLE);
+			if ("Search".equals(mCriteria)) {
+				Log.d(TAG, "Inside RESULT_OK");
+			} else if ("Publish".equals(mCriteria)) {
+				if (mLocationEdit.getVisibility() == View.GONE) {
+					mLocationEdit.setVisibility(View.VISIBLE);
 				}
-				if(mViews.getVisibility() == View.GONE){
-					mViews.setVisibility(View.VISIBLE);
+				if (mViewsEdit.getVisibility() == View.GONE) {
+					mViewsEdit.setVisibility(View.VISIBLE);
 				}
 			}
-			
+
 			switch (requestCode) {
 			case CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE:
 				// Get the information about the picture taken by camera and
@@ -209,39 +281,86 @@ public class InsertData extends Activity {
 			}
 		}
 	}
-	
+
+	/**
+	 * Push information to either database or server.
+	 */
 	private void insertInformation() {
-		String locationInfo = mLocation.getText().toString();
-		String yourView = mViews.getText().toString();
-		String rate = String.valueOf(ratingBar.getRating());
-		
-		if(locationInfo == null){
-			locationInfo = getString(R.string.no_info);
-		} else if(yourView == null){
-			yourView = getString(R.string.no_info);
-		} else if(rate == null){
-			rate = "0";
-		} else if(mItemName == null){
+		mPlaceInformation = mPlaceEdit.getText().toString();
+		mLocationInformation = mLocationEdit.getText().toString();
+		mYourViews = mViewsEdit.getText().toString();
+		mRatings = String.valueOf(ratingBar.getRating());
+
+		if (mLocationInformation == null) {
+			mLocationInformation = getString(R.string.no_info);
+		} else if (mYourViews == null) {
+			mYourViews = getString(R.string.no_info);
+		} else if (mRatings == null) {
+			mRatings = "0";
+		} else if (mItemName == null) {
 			mItemName = getString(R.string.no_info);
 		}
+		// Below code inserts into database currently. Must be commented
+		// when server contact is established.
+		insertToDb();
 
+		// Below commented code must be uncommented when server insert is ready.
+		// insertToServer();
+	}
+
+	/**
+	 * Insert information to database.
+	 */
+	private void insertToDb() {
 		try {
 			ContentValues cv = new ContentValues();
 			cv.put(RateAgent.RateProvider.ITEM_NAME, mItemName);
+			cv.put(RateAgent.RateProvider.ITEM_PLACE_NAME, mPlaceInformation);
 			cv.put(RateAgent.RateProvider.ITEM_PIC, getImageByte());
-			cv.put(RateAgent.RateProvider.ITEM_RATING, rate);
-			cv.put(RateAgent.RateProvider.ITEM_LOC, locationInfo);
-			cv.put(RateAgent.RateProvider.ITEM_COMMENT, yourView);
+			cv.put(RateAgent.RateProvider.ITEM_RATING, mRatings);
+			cv.put(RateAgent.RateProvider.ITEM_LOC, mLocationInformation);
+			cv.put(RateAgent.RateProvider.ITEM_COMMENT, mYourViews);
+
 			ContentProviderClient client = getBaseContext()
 					.getContentResolver()
 					.acquireContentProviderClient(RATE_URI);
+
 			client.insert(RATE_URI, cv);
-		} catch (RemoteException e) {
+		} catch (RemoteException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+	}
+
+	/**
+	 * Insert information to server.
+	 */
+	private void insertToServer() {
+		ServerPost svPost = new ServerPost();
+		JSONObject json = new JSONObject();
+		JSONArray jsonArray = new JSONArray();
+		try {
+			json.put(RateThemUtil.ITEM_NAME, mItemName);
+			json.put(RateThemUtil.ITEM_PLACE_NAME, mPlaceInformation);
+			json.put(RateThemUtil.ITEM_PIC, getImageByte());
+			json.put(RateThemUtil.ITEM_RATING, mRatings);
+			json.put(RateThemUtil.ITEM_LOC, mLocationInformation);
+			json.put(RateThemUtil.ITEM_COMMENT, mYourViews);
+
+			jsonArray.put(json);
+			JSONObject jObject = new JSONObject();
+			jObject.put(RateThemUtil.TABLE_NAME, jsonArray);
+			svPost.pushDataToServer(RateThemUtil.SERVER_URL, jObject);
+		} catch (JSONException e) {
 			e.printStackTrace();
 		}
 	}
-	
-	private byte[] getImageByte(){
+
+	/**
+	 * Transform bitmap to byteArray.
+	 * @return
+	 */
+	private byte[] getImageByte() {
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
 		mPhoto.compress(Bitmap.CompressFormat.PNG, 100, bos);
 		byte[] bArray = bos.toByteArray();

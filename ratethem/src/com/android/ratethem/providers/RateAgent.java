@@ -21,8 +21,14 @@ public class RateAgent {
 		public static final String ITEM_PIC = "item_pic";
 
 		public static final String ITEM_RATING = "item_rating";
+		
+		public static final String ITEM_PLACE_NAME = "item_place_name";
 
 		public static final String ITEM_LOC = "item_location";
+		
+		public static final String ITEM_LATITUDE = "item_location_latitude";
+		
+		public static final String ITEM_LONGITUDE = "item_location_longitude";
 
 		public static final String ITEM_COMMENT = "item_comment";
 	}

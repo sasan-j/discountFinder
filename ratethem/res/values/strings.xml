@@ -1,9 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">ratethem</string>
+    <string name="app_name">Rate Items</string>
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
     <string name="no_info">No Information</string>
+    <string name="done">Done</string>
+    <string name="search">Search</string>
+    <string name="publish">Publish</string>
+    <string name="location_header_text">Location</string>
+    <string name="place_name_text">Place Name</string>
+    <string name="your_view_text">Your View</string>
+    <string name="search_text">Choose item to search</string>
+    <string name="location_text">Choose location to search</string>
+    <string name="radius_text">Choose radius of search</string>
+    <string name="current_location">Current location</string>
+    <string-array name="item_name">
+        <item>Food</item>
+        <item>Technology</item>
+        <item>HomeCare</item>
+        <item>Clothing</item>
+    </string-array>
+    <string-array name="location_info">
+        <item>Current location</item>
+        <item>Add location manually</item>
+    </string-array>
+    <string-array name="radius_location">
+        <item>5 miles</item>
+        <item>10 miles</item>
+        <item>15 miles</item>
+        <item>20 miles</item>
+    </string-array>
+    <string-array name="radius_value">
+        <item>5</item>
+        <item>10</item>
+        <item>15</item>
+        <item>20</item>
+    </string-array>
 
 </resources>

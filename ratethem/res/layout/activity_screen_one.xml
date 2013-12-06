@@ -11,20 +11,21 @@
     <Button
         android:id="@+id/Publish"
         style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="100dp"
+        android:layout_height="20dp"
         android:layout_above="@+id/Search"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="29dp"
-        android:text="Publish" />
+        android:background="@drawable/post_disc" />
 
     <Button
         android:id="@+id/Search"
         style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="100dp"
+        android:layout_height="20dp"
+        android:layout_marginTop="40dp"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:text="Search" />
+        android:background="@drawable/search_disc" />
 
 </RelativeLayout>

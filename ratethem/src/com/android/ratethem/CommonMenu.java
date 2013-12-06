@@ -1,6 +1,7 @@
 package com.android.ratethem;
 
 import com.android.ratethem.R;
+import com.android.ratethem.util.RateThemUtil;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -14,26 +15,21 @@ public class CommonMenu extends Activity {
 
 	private Button food, clothing, electronics, homecare;
 	// private Button movies, places, books, healthcare, others;
-	protected static final String TAG = "DiscountFinder_S2";
+	protected static final String TAG = "ratethem";
 
+    // String to get the criteria Publish  or Search.
 	private String mCriteria = null;
-
-	private boolean mIsSearch = false;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_common_menu);
+		// Get the extras from calling activity.
 		Bundle extras = getIntent().getExtras();
 		if (extras != null) {
 			mCriteria = extras.getString("criteria");
 			Log.d(TAG, "Button Name: " + mCriteria);
-			if ("Search".equals(mCriteria)) {
-				mIsSearch = true;
-			}
-
 		}
-		Log.d(TAG, "Search Criteria: " + mIsSearch);
 		addListenerOnButton();
 	}
 
@@ -41,7 +37,13 @@ public class CommonMenu extends Activity {
 		// Display button Food
 		food = (Button) findViewById(R.id.Food);
 		// Display button click listener
-		food.setOnClickListener((OnClickListener) CommonListner);
+		food.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				startInsertData(v, RateThemUtil.FOOD);		
+			}
+		});;
 
 		/*
 		 * // Display button Movies movies = (Button) findViewById(R.id.Movies);
@@ -64,17 +66,36 @@ public class CommonMenu extends Activity {
 		// Display button Electronics
 		electronics = (Button) findViewById(R.id.Electronics);
 		// Display button click listener
-		electronics.setOnClickListener((OnClickListener) CommonListner);
+		electronics.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				startInsertData(v, RateThemUtil.ELECTRONICS);
+			}
+		});;
 
 		// Display button Clothing
 		clothing = (Button) findViewById(R.id.Clothing);
 		// Display button click listener
-		clothing.setOnClickListener((OnClickListener) CommonListner);
+		clothing.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				startInsertData(v, RateThemUtil.CLOTHING);
+				
+			}
+		});
 
 		// Display button Homecare
 		homecare = (Button) findViewById(R.id.HomeCare);
 		// Display button click listener
-		homecare.setOnClickListener((OnClickListener) CommonListner);
+		homecare.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				startInsertData(v, RateThemUtil.HOMECARE);				
+			}
+		});
 
 		/*
 		 * // Display button Others others = (Button) findViewById(R.id.Others);
@@ -83,28 +104,17 @@ public class CommonMenu extends Activity {
 		 */
 	}
 
-	private View.OnClickListener CommonListner = new View.OnClickListener() {
-
-		@Override
-		public void onClick(View v) {
-			Button b = (Button) v;
-			String itemName = b.getText().toString();
-			Intent intent = null;
-			Log.d(TAG, "Button Pressed For Entering Data: "
-					+ b.getText().toString());
-			if (mIsSearch) {
-				intent = new Intent(v.getContext(), SearchList.class);
-				intent.putExtra("criteria", mCriteria);
-				intent.putExtra("item_name", itemName);
-			} else {
-				intent = new Intent(v.getContext(), InsertData.class);
-				intent.putExtra("criteria", mCriteria);
-			}
-			if (intent != null) {
-				startActivity(intent);
-			}
-			finish();
-		}
-	};
+	/**
+	 * insert the item information requested and start next activity.
+	 * @param view
+	 * @param itemName
+	 */
+	private void startInsertData(View view, String itemName){
+		Intent intent = new Intent(view.getContext(), InsertData.class);
+		intent.putExtra(RateThemUtil.CRITERIA, mCriteria);
+		intent.putExtra(RateThemUtil.ITEM_NAME, itemName);
+		startActivity(intent);
+		finish();
+	}
 
 }

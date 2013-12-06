@@ -1,0 +1,76 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin" >
+
+    <TextView
+        android:id="@+id/search_text1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/search_text" />
+
+    <Spinner
+        android:id="@+id/search_item"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/search_text1"
+        android:entries="@array/item_name"
+        android:paddingTop="10dp"
+        android:prompt="@string/search_text" />
+
+    <TextView
+        android:id="@+id/location_text1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/search_item"
+        android:paddingTop="10dp"
+        android:text="@string/location_text" />
+
+    <Spinner
+        android:id="@+id/location1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/location_text1"
+        android:entries="@array/location_info"
+        android:paddingTop="10dp"
+        android:prompt="@string/location_text" />
+
+    <EditText
+        android:id="@+id/add_location"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="10dp"
+        android:visibility="gone"
+        android:inputType="text" />"
+
+    <TextView
+        android:id="@+id/radius_text1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/location1"
+        android:paddingTop="10dp"
+        android:text="@string/radius_text" />
+
+    <Spinner
+        android:id="@+id/radius1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/radius_text1"
+        android:entries="@array/radius_location"
+        android:paddingTop="10dp"
+        android:prompt="@string/radius_text" />
+
+    <Button
+        android:id="@+id/search"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/radius1"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:text="@string/done" />
+
+</RelativeLayout>

@@ -6,50 +6,50 @@
 
     <TextView
         android:id="@+id/textView1"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_alignRight="@+id/Books"
         android:layout_marginTop="16dp"
         android:text="Click on the categories to rate" />
 
     <Button
-        android:id="@+id/Clothing"
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/HomeCare"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="22dp"
-        android:text="Clothing" />
-
-    <Button
         android:id="@+id/Food"
         style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/HomeCare"
-        android:layout_below="@+id/textView1"
-        android:layout_marginTop="35dp"
-        android:text="Food" />
+        android:layout_width="100dp"
+        android:layout_height="30dp"
+        android:layout_below="@id/textView1"
+        android:layout_marginTop="40dp"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/food" />
 
     <Button
         android:id="@+id/Electronics"
         style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/Food"
+        android:layout_width="100dp"
+        android:layout_height="30dp"
+        android:layout_below="@id/Food"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
-        android:text="Electronics" />
+        android:layout_marginTop="50dp"
+        android:background="@drawable/technology" />
 
     <Button
         android:id="@+id/HomeCare"
         style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignRight="@+id/Electronics"
-        android:layout_centerVertical="true"
-        android:text="HomeCare" />
+        android:layout_width="100dp"
+        android:layout_height="30dp"
+        android:layout_below="@id/Electronics"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="50dp"
+        android:background="@drawable/homecare" />
+
+    <Button
+        android:id="@+id/Clothing"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="100dp"
+        android:layout_height="30dp"
+        android:layout_below="@id/HomeCare"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="50dp"
+        android:background="@drawable/clothes" />
 
 </RelativeLayout>

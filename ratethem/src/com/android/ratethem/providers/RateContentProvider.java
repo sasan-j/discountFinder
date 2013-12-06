@@ -32,7 +32,7 @@ public class RateContentProvider extends ContentProvider {
 		public void onCreate(SQLiteDatabase db) {
 			db.execSQL("Create table "
 					+ TABLE_NAME
-					+ "( _id INTEGER PRIMARY KEY AUTOINCREMENT, item_name TEXT, item_pic BLOB, item_rating TEXT, item_location TEXT, item_comment TEXT);");
+					+ "( _id INTEGER PRIMARY KEY AUTOINCREMENT, item_name TEXT, item_pic BLOB, item_rating TEXT, item_place_name TEXT, item_location TEXT, item_location_latitude TEXT, item_location_longitude TEXT, item_comment TEXT);");
 		}
 
 		@Override
@@ -83,8 +83,8 @@ public class RateContentProvider extends ContentProvider {
 		SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
 		SQLiteDatabase db = mRateHelper.getReadableDatabase();
 		qb.setTables(TABLE_NAME);
-		Cursor c = qb.query(db, projection, selection, null, null, null,
-				sortOrder);
+		Cursor c = qb.query(db, projection, selection, selectionArgs, null,
+				null, sortOrder);
 		c.setNotificationUri(getContext().getContentResolver(), uri);
 		return c;
 	}
