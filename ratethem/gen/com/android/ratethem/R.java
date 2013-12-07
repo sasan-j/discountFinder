@@ -88,7 +88,9 @@ public final class R {
     }
     public static final class string {
         public static final int action_settings=0x7f060001;
+        public static final int album_name=0x7f06000e;
         public static final int app_name=0x7f060000;
+        public static final int cannot=0x7f06000f;
         public static final int current_location=0x7f06000d;
         public static final int done=0x7f060004;
         public static final int hello_world=0x7f060002;

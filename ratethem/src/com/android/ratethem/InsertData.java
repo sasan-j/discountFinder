@@ -2,10 +2,15 @@ package com.android.ratethem;
 //testing
 //import com.androidexample.cameraphotocapture.CameraPhotoCapture;
 
+import com.android.ratethem.util.*;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -19,9 +24,12 @@ import com.android.ratethem.util.RateThemUtil;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.ContentProviderClient;
+import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -46,100 +54,282 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.RatingBar.OnRatingBarChangeListener;
 import android.widget.Toast;
+import android.os.Build;
+
 
 public class InsertData extends Activity {
 
 	private ImageButton takepic, done;
-
-	protected static final String TAG = "ratethem";
-
+	protected static final String LOG_TAG = "ratethem";
 	private RatingBar ratingBar;
-
 	private File mImageFile;
-
 	private String mItemName = null;
 
-	final static int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 1;
+	//for image capturing
+	private static final int ACTION_CAPTURE_IMAGE = 1;
+	private static final String BITMAP_STORAGE_KEY = "viewbitmap";
+	private ImageView mImageView;
+	private Bitmap mImageBitmap;
+	private String mCurrentPhotoPath;
+	private static final String JPEG_FILE_PREFIX = "IMG_";
+	private static final String JPEG_FILE_SUFFIX = ".jpg";
+	private AlbumStorageDirFactory mAlbumStorageDirFactory = null;
+
+	
 
 	private static final int FILE = 7;
-
 	public static final Uri RATE_URI = Uri
 			.parse("content://com.android.ratethem.providers.RateContentProvider"
 					+ "/" + RateAgent.RateProvider.TABLE_NAME);
-
+	
+	private static final String PICTURES_DIR = "photos";
+	
 	Uri imageUri = null;
-
 	static TextView imageDetails = null;
-
-	private ImageView mImage;
-
+	//private ImageView mImage;
 	private EditText mPlaceEdit;
-
 	private EditText mLocationEdit;
-
 	private EditText mViewsEdit;
-
 	private TextView mPlaceInfo;
-
 	private TextView mLocationInfo;
-
 	private TextView mViewsInfo;
-
 	private String mLatitude = null;
-
 	private String mLongitude = null;
-
 	InsertData CameraActivity = null;
-
 	private Bitmap mPhoto = null;
-
 	private String mCriteria = null;
-
 	private String mSearch = null;
-
 	private String mPublish = null;
-
 	private String mPlaceInformation = null;
-
 	private String mRatings = null;
-
 	private String mLocationInformation = null;
-
 	private String mYourViews = null;
 
+	
+	///////////////////////////////////////////////////////////////////////////////
+	///////for capturing image ////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////////////
+	
+	/* Photo album for this application */
+	private String getAlbumName() {
+		return getString(R.string.album_name);
+	}
+
+	
+	private File getAlbumDir() {
+		File storageDir = null;
+
+		if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
+			Log.d(LOG_TAG, "inside first if");
+			storageDir = mAlbumStorageDirFactory.getAlbumStorageDir(getAlbumName());
+			Log.d(LOG_TAG, "after factory");
+			if (storageDir != null) {
+				if (! storageDir.mkdirs()) {
+					if (! storageDir.exists()){
+						Log.d(LOG_TAG, "failed to create directory");
+						return null;
+					}
+				}
+			}
+			
+		} else {
+			Log.v(LOG_TAG, "External storage is not mounted READ/WRITE.");
+		}
+		
+		return storageDir;
+	}
+
+	private File createImageFile() throws IOException {
+		// Create an image file name
+		String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+		Log.d(LOG_TAG, "TimeStamp is: "+timeStamp);
+		String imageFileName = JPEG_FILE_PREFIX + timeStamp + "_";
+		Log.d(LOG_TAG, "imageFileName is: "+imageFileName);
+		File albumF = getAlbumDir();
+		Log.d(LOG_TAG, "after getAlbumDir");
+		File imageF = File.createTempFile(imageFileName, JPEG_FILE_SUFFIX, albumF);
+		return imageF;
+	}
+
+	private File setUpPhotoFile() throws IOException {
+		Log.d(LOG_TAG, "before  createImageFile");
+		File f = createImageFile();
+		Log.d(LOG_TAG, "after createImageFile");
+		mCurrentPhotoPath = f.getAbsolutePath();
+		return f;
+	}
+	
+	private void dispatchTakePictureIntent(int actionCaptureImage) {
+		Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+			File f = null;
+			try {
+				Log.d(LOG_TAG, "before setupphotofile");
+				f = setUpPhotoFile();
+				Log.d(LOG_TAG, "after setupphotofile");
+				mCurrentPhotoPath = f.getAbsolutePath();
+				takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(f));
+			} catch (IOException e) {
+				e.printStackTrace();
+				f = null;
+				mCurrentPhotoPath = null;
+			}
+		startActivityForResult(takePictureIntent, actionCaptureImage);
+	}
+	
+	/*
+	 * Method to capture data sent back from activity launched by
+	 * startActivityResult.
+	 */
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		switch (requestCode) {
+		case ACTION_CAPTURE_IMAGE: {
+			if (resultCode == RESULT_OK) {
+				//handleBigCameraPhoto();
+				Log.d(LOG_TAG, "Result is ok and being handled");
+				setPic();
+			}
+			break;
+		}//ACTION_CAPTURE_IMAGE
+
+		} // switch
+	}
+	
+	
+	/**
+	 * Indicates whether the specified action can be used as an intent. This
+	 * method queries the package manager for installed packages that can
+	 * respond to an intent with the specified action. If no suitable package is
+	 * found, this method returns false.
+	 * http://android-developers.blogspot.com/2009/01/can-i-use-this-intent.html
+	 *
+	 * @param context The application's environment.
+	 * @param action The Intent action to check for availability.
+	 *
+	 * @return True if an Intent with the specified action can be sent and
+	 *         responded to, false otherwise.
+	 */
+	public static boolean isIntentAvailable(Context context, String action) {
+		final PackageManager packageManager = context.getPackageManager();
+		final Intent intent = new Intent(action);
+		List<ResolveInfo> list =
+			packageManager.queryIntentActivities(intent,
+					PackageManager.MATCH_DEFAULT_ONLY);
+		return list.size() > 0;
+	}
+	/*
+	private void setBtnListenerOrDisable( 
+			Button btn, 
+			Button.OnClickListener onClickListener,
+			String intentName
+	) {
+		if (isIntentAvailable(this, intentName)) {
+			btn.setOnClickListener(onClickListener);        	
+		} else {
+			btn.setText( 
+				getText(R.string.cannot).toString() + " " + btn.getText());
+			btn.setClickable(false);
+		}
+	}
+	*/
+	
+	private void setBtnListenerOrDisable( 
+			ImageButton imgBtn, 
+			ImageButton.OnClickListener onClickListener,
+			String intentName
+	) {
+		if (isIntentAvailable(this, intentName)) {
+			imgBtn.setOnClickListener(onClickListener);        	
+		} else {
+			imgBtn.setClickable(false);
+		}
+	}
+	
+	private void setPic() {
+
+		/* There isn't enough memory to open up more than a couple camera photos */
+		/* So pre-scale the target bitmap into which the file is decoded */
+
+		/* Get the size of the ImageView */
+		int targetW = mImageView.getWidth();
+		int targetH = mImageView.getHeight();
+
+		/* Get the size of the image */
+		BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+		bmOptions.inJustDecodeBounds = true;
+		BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
+		int photoW = bmOptions.outWidth;
+		int photoH = bmOptions.outHeight;
+		
+		/* Figure out which way needs to be reduced less */
+		int scaleFactor = 1;
+		if ((targetW > 0) || (targetH > 0)) {
+			scaleFactor = Math.min(photoW/targetW, photoH/targetH);	
+		}
+
+		/* Set bitmap options to scale the image decode target */
+		bmOptions.inJustDecodeBounds = false;
+		bmOptions.inSampleSize = scaleFactor;
+		bmOptions.inPurgeable = true;
+
+		/* Decode the JPEG file into a Bitmap */
+		mImageBitmap = BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
+		/* Associate the Bitmap to the ImageView */
+		mImageView.setImageBitmap(mImageBitmap);
+	}
+	
+	///////////////////////////////////////////////////////////////////////////////////////
+	
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_insert_data);
-
-		CameraActivity = this;
-
+		
+		if( savedInstanceState != null ) {
+			Toast.makeText(this, savedInstanceState .getString("message"), Toast.LENGTH_LONG).show();
+		}
 		// Get the extras from calling activity.
 		Bundle extras = getIntent().getExtras();
 		if (extras != null) {
 			mItemName = extras.getString(RateThemUtil.ITEM_NAME);
 			mCriteria = extras.getString(RateThemUtil.CRITERIA);
 		}
-		Log.d(TAG, "Criteria sent: " + mCriteria);
-		mImage = (ImageView) findViewById(R.id.showImg);
+		Log.d(LOG_TAG, "Criteria sent: " + mCriteria);
+		mImageView = (ImageView) findViewById(R.id.showImg);
 		mPlaceEdit = (EditText) findViewById(R.id.place_name);
 		mLocationEdit = (EditText) findViewById(R.id.location);
 		mViewsEdit = (EditText) findViewById(R.id.your_view);
 		mPlaceInfo = (TextView) findViewById(R.id.place_name_info);
 		mLocationInfo = (TextView) findViewById(R.id.location_info);
 		mViewsInfo = (TextView) findViewById(R.id.your_view_info);
-		Log.d(TAG, "mLocInformation: " + mLocationInfo);
-		Log.d(TAG, "mViewInfo: " + mViewsInfo);
+		Log.d(LOG_TAG, "mLocInformation: " + mLocationInfo);
+		Log.d(LOG_TAG, "mViewInfo: " + mViewsInfo);
 		mSearch = getString(R.string.search);
 		mPublish = getString(R.string.publish);
-		Log.d(TAG, "Strings for Search and publish: " + mSearch + " : "
+		Log.d(LOG_TAG, "Strings for Search and publish: " + mSearch + " : "
 				+ mPublish);
 		// instantiate the buttons and add listener.
 		initButton();
 		// instantiate rating bar and add listener.
 		initRatingBar();
+		mPlaceEdit.setVisibility(View.VISIBLE);
+		mLocationEdit.setVisibility(View.VISIBLE);
+		mViewsEdit.setVisibility(View.VISIBLE);
+		mPlaceInfo.setVisibility(View.GONE);
+		mLocationInfo.setVisibility(View.GONE);
+		mViewsInfo.setVisibility(View.GONE);
+
+
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.FROYO) {
+			mAlbumStorageDirFactory = new FroyoAlbumDirFactory();
+		} else {
+			mAlbumStorageDirFactory = new BaseAlbumDirFactory();
+		}
+
 		// Since this activity is used for both posting data and displaying data
 		// certain items are made visible and invisible based on criteria.
+		/*
 		if (mSearch.equals(mCriteria)) {
 			takepic.setVisibility(View.GONE);
 			done.setVisibility(View.GONE);
@@ -168,22 +358,43 @@ public class InsertData extends Activity {
 			mLocationInfo.setVisibility(View.GONE);
 			mViewsInfo.setVisibility(View.GONE);
 
-		}
+		}*/
 
+	}
+
+	@Override
+	public void onSaveInstanceState(Bundle outState) {
+		outState.putString("message", "This is my message to be reloaded");
+		//outState.putParcelable("PHOTO", mPhoto);
+		//for capture image
+		outState.putParcelable(BITMAP_STORAGE_KEY, mImageBitmap);
+		super.onSaveInstanceState(outState);
+	}
+	
+	@Override
+	protected void onRestoreInstanceState(Bundle savedInstanceState) {
+		super.onRestoreInstanceState(savedInstanceState);
+		mImageBitmap = savedInstanceState.getParcelable(BITMAP_STORAGE_KEY);
+		mImageView.setImageBitmap(mImageBitmap);
 	}
 
 	public void initButton() {
 		// Display button Taking Pictures
 		takepic = (ImageButton) findViewById(R.id.TakePic);
-
+		setBtnListenerOrDisable( 
+				takepic, 
+				TakePicListner,
+				MediaStore.ACTION_IMAGE_CAPTURE
+		);
 		// Display button click listener
-		takepic.setOnClickListener((OnClickListener) TakePicListner);
+		//takepic.setOnClickListener((OnClickListener) TakePicListner);
 
 		done = (ImageButton) findViewById(R.id.Done);
 		done.setOnClickListener((OnClickListener) DoneListener);
 
 	}
 
+	
 	private View.OnClickListener DoneListener = new View.OnClickListener() {
 		@Override
 		public void onClick(View v) {
@@ -197,96 +408,12 @@ public class InsertData extends Activity {
 	private View.OnClickListener TakePicListner = new View.OnClickListener() {
 		@Override
 		public void onClick(View v) {
-			// launch camera to take picture
-			launchCamera();
-			// String fileName = "Camera_Example.jpg";
-			//
-			// // Create parameters for Intent with filename
-			//
-			// ContentValues values = new ContentValues();
-			//
-			// values.put(MediaStore.Images.Media.TITLE, fileName);
-			//
-			// values.put(MediaStore.Images.Media.DESCRIPTION,"Image capture by camera");
-			//
-			// /****** imageUri is the current activity attribute, define and
-			// save it for later usage *****/
-			// imageUri = getContentResolver().insert(
-			// MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
-			//
-			// /****** EXTERNAL_CONTENT_URI : style URI for the "primary"
-			// external storage volume. ******/
-			//
-			//
-			// /****** Standard Intent action that can be sent to have the
-			// camera application capture an image and return it. ******/
-			//
-			// Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-			//
-			// intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
-			//
-			// intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
-			//
-			// startActivityForResult(intent,
-			// CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
+		
+			dispatchTakePictureIntent(ACTION_CAPTURE_IMAGE);
+
 		}
 	};
 
-	/**
-	 * Method to launch camera to take picture. Camera is launched with
-	 * startActivityForResult so that after picture taken its sent to calling
-	 * activity which is this in this case.
-	 */
-	private void launchCamera() {
-		Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
-		File imgFolder = new File(Environment.getExternalStorageDirectory()
-				+ "/TakePicApp");
-		if (!imgFolder.exists()) {
-			imgFolder.mkdir();
-		}
-		Log.d(TAG, "Image Path just created: " + imgFolder.getAbsolutePath());
-		mImageFile = new File(imgFolder.getAbsolutePath(), "PIC"
-				+ System.currentTimeMillis() + ".jpg");
-		intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(mImageFile));
-		startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
-	}
-
-	/**
-	 * Method to capture data sent back from activity launched by
-	 * startActivityResult.
-	 */
-	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		super.onActivityResult(requestCode, resultCode, data);
-		Log.d(TAG, "coming to onActivity result: " + resultCode);
-		if (resultCode == RESULT_OK) {
-			if ("Search".equals(mCriteria)) {
-				Log.d(TAG, "Inside RESULT_OK");
-			} else if ("Publish".equals(mCriteria)) {
-				if (mLocationEdit.getVisibility() == View.GONE) {
-					mLocationEdit.setVisibility(View.VISIBLE);
-				}
-				if (mViewsEdit.getVisibility() == View.GONE) {
-					mViewsEdit.setVisibility(View.VISIBLE);
-				}
-			}
-
-			switch (requestCode) {
-			case CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE:
-				// Get the information about the picture taken by camera and
-				// display a thumbnail of the picture.
-				if (null != data) {
-					mPhoto = (Bitmap) data.getExtras().get("data");
-					Log.d(TAG, "Bitmap: " + mPhoto);
-					mImage.setImageBitmap(Bitmap.createScaledBitmap(mPhoto,
-							mImage.getWidth(), mImage.getHeight(), false));
-				} else {
-					Toast.makeText(InsertData.this,
-							"Couldn't capture image!!!", Toast.LENGTH_SHORT)
-							.show();
-				}
-			}
-		}
-	}
 
 	/**
 	 * Push information to either database or server.
@@ -322,7 +449,7 @@ public class InsertData extends Activity {
 			ContentValues cv = new ContentValues();
 			cv.put(RateAgent.RateProvider.ITEM_NAME, mItemName);
 			cv.put(RateAgent.RateProvider.ITEM_PLACE_NAME, mPlaceInformation);
-			cv.put(RateAgent.RateProvider.ITEM_PIC, getImageByte());
+			//cv.put(RateAgent.RateProvider.ITEM_PIC, getImageByte());
 			cv.put(RateAgent.RateProvider.ITEM_RATING, mRatings);
 			cv.put(RateAgent.RateProvider.ITEM_LOC, mLocationInformation);
 			cv.put(RateAgent.RateProvider.ITEM_COMMENT, mYourViews);
@@ -348,7 +475,7 @@ public class InsertData extends Activity {
 		try {
 			json.put(RateThemUtil.ITEM_NAME, mItemName);
 			json.put(RateThemUtil.ITEM_PLACE_NAME, mPlaceInformation);
-			json.put(RateThemUtil.ITEM_PIC, getImageByte());
+			//json.put(RateThemUtil.ITEM_PIC, getImageByte());
 			json.put(RateThemUtil.ITEM_RATING, mRatings);
 			json.put(RateThemUtil.ITEM_LOC, mLocationInformation);
 			json.put(RateThemUtil.ITEM_COMMENT, mYourViews);
@@ -362,170 +489,6 @@ public class InsertData extends Activity {
 		}
 	}
 
-	/**
-	 * Transform bitmap to byteArray.
-	 * 
-	 * @return
-	 */
-	private byte[] getImageByte() {
-		byte[] bArray = null;
-		ByteArrayOutputStream bos = new ByteArrayOutputStream();
-		if (null != mPhoto) {
-			mPhoto.compress(Bitmap.CompressFormat.PNG, 100, bos);
-			bArray = bos.toByteArray();
-		}
-		return bArray;
-	}
-
-	public static String convertImageUriToFile(Uri imageUri, Activity activity) {
-		Cursor cursor = null;
-		int imageID = 0;
-
-		try {
-			/*********** Which columns values want to get *******/
-			String[] proj = { MediaStore.Images.Media.DATA,
-					MediaStore.Images.Media._ID,
-					MediaStore.Images.Thumbnails._ID,
-					MediaStore.Images.ImageColumns.ORIENTATION };
-
-			cursor = activity.managedQuery(
-
-			imageUri, // Get data for specific image URI
-					proj, // Which columns to return
-					null, // WHERE clause; which rows to return (all rows)
-					null, // WHERE clause selection arguments (none)
-					null // Order-by clause (ascending by name)
-
-					);
-
-			int columnIndex = cursor
-					.getColumnIndexOrThrow(MediaStore.Images.Media._ID);
-			int columnIndexThumb = cursor
-					.getColumnIndexOrThrow(MediaStore.Images.Thumbnails._ID);
-			int file_ColumnIndex = cursor
-					.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-			// int orientation_ColumnIndex =
-			// cursor.getColumnIndexOrThrow(MediaStore.Images.ImageColumns.ORIENTATION);
-
-			int size = cursor.getCount();
-
-			/******* If size is 0, there are no images on the SD Card. *****/
-
-			if (size == 0) {
-				// imageDetails.setText("No Image");
-			} else {
-
-				int thumbID = 0;
-				if (cursor.moveToFirst()) {
-
-					/**************** Captured image details ************/
-
-					/***** Used to show image on view in LoadImagesFromSDCard class ******/
-					imageID = cursor.getInt(columnIndex);
-
-					thumbID = cursor.getInt(columnIndexThumb);
-
-					String Path = cursor.getString(file_ColumnIndex);
-
-					// String orientation =
-					// cursor.getString(orientation_ColumnIndex);
-
-					String CapturedImageDetails = " CapturedImageDetails : \n\n"
-							+ " ImageID :"
-							+ imageID
-							+ "\n"
-							+ " ThumbID :"
-							+ thumbID + "\n" + " Path :" + Path + "\n";
-
-					// Show Captured Image detail on view
-					// imageDetails.setText(CapturedImageDetails);
-
-				}
-			}
-		} finally {
-			if (cursor != null) {
-				cursor.close();
-			}
-		}
-
-		return "" + imageID;
-	}
-
-	// Class with extends AsyncTask class
-	public class LoadImagesFromSDCard extends AsyncTask<String, Void, Void> {
-
-		private ProgressDialog Dialog = new ProgressDialog(InsertData.this);
-
-		Bitmap mBitmap;
-
-		protected void onPreExecute() {
-			/****** NOTE: You can call UI Element here. *****/
-
-			// UI Element
-			Dialog.setMessage("Loading image from Sdcard..");
-			Dialog.show();
-		}
-
-		// Call after onPreExecute method
-		protected Void doInBackground(String... urls) {
-
-			Bitmap bitmap = null;
-			Bitmap newBitmap = null;
-			Uri uri = null;
-
-			try {
-
-				/**
-				 * Uri.withAppendedPath Method Description Parameters baseUri
-				 * Uri to append path segment to pathSegment encoded path
-				 * segment to append Returns a new Uri based on baseUri with the
-				 * given segment appended to the path
-				 */
-
-				uri = Uri.withAppendedPath(
-						MediaStore.Images.Media.EXTERNAL_CONTENT_URI, ""
-								+ urls[0]);
-
-				/************** Decode an input stream into a bitmap. *********/
-				bitmap = BitmapFactory.decodeStream(getContentResolver()
-						.openInputStream(uri));
-
-				if (bitmap != null) {
-
-					/********* Creates a new bitmap, scaled from an existing bitmap. ***********/
-
-					newBitmap = Bitmap.createScaledBitmap(bitmap, 340, 170,
-							true);
-
-					bitmap.recycle();
-
-					if (newBitmap != null) {
-
-						mBitmap = newBitmap;
-					}
-				}
-			} catch (IOException e) {
-				// Error fetching image, try to recover
-
-				/********* Cancel execution of this task. **********/
-				cancel(true);
-			}
-
-			return null;
-		}
-
-		protected void onPostExecute(Void unused) {
-
-			// NOTE: You can call UI Element here.
-
-			// Close progress dialog
-			Dialog.dismiss();
-
-			if (mBitmap != null)
-				mImage.setImageBitmap(mBitmap);
-
-		}
-	}
 
 	public void initRatingBar() {
 
