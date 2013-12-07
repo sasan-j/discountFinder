@@ -44,36 +44,33 @@ public final class R {
     }
     public static final class id {
         public static final int Clothing=0x7f0a0004;
-        public static final int Done=0x7f0a0011;
+        public static final int Done=0x7f0a000e;
         public static final int Electronics=0x7f0a0002;
         public static final int Food=0x7f0a0001;
         public static final int HomeCare=0x7f0a0003;
-        public static final int Publish=0x7f0a0012;
-        public static final int Search=0x7f0a0013;
+        public static final int Publish=0x7f0a000f;
+        public static final int Search=0x7f0a0010;
         public static final int TakePic=0x7f0a0007;
-        public static final int action_settings=0x7f0a001e;
-        public static final int add_location=0x7f0a0018;
-        public static final int loc_info=0x7f0a001d;
-        public static final int location=0x7f0a000c;
-        public static final int location1=0x7f0a0017;
-        public static final int location_info=0x7f0a000d;
-        public static final int location_text1=0x7f0a0016;
-        public static final int location_txt=0x7f0a000b;
-        public static final int pic=0x7f0a001c;
+        public static final int action_settings=0x7f0a001b;
+        public static final int add_location=0x7f0a0015;
+        public static final int loc_info=0x7f0a001a;
+        public static final int location=0x7f0a000b;
+        public static final int location1=0x7f0a0014;
+        public static final int location_text1=0x7f0a0013;
+        public static final int location_txt=0x7f0a000a;
+        public static final int pic=0x7f0a0019;
         public static final int place_name=0x7f0a0009;
-        public static final int place_name_info=0x7f0a000a;
         public static final int place_name_txt=0x7f0a0008;
-        public static final int radius1=0x7f0a001a;
-        public static final int radius_text1=0x7f0a0019;
+        public static final int radius1=0x7f0a0017;
+        public static final int radius_text1=0x7f0a0016;
         public static final int ratingBar=0x7f0a0006;
-        public static final int search=0x7f0a001b;
-        public static final int search_item=0x7f0a0015;
-        public static final int search_text1=0x7f0a0014;
+        public static final int search=0x7f0a0018;
+        public static final int search_item=0x7f0a0012;
+        public static final int search_text1=0x7f0a0011;
         public static final int showImg=0x7f0a0005;
         public static final int textView1=0x7f0a0000;
-        public static final int your_view=0x7f0a000f;
-        public static final int your_view_info=0x7f0a0010;
-        public static final int your_view_txt=0x7f0a000e;
+        public static final int your_view=0x7f0a000d;
+        public static final int your_view_txt=0x7f0a000c;
     }
     public static final class layout {
         public static final int activity_common_menu=0x7f030000;

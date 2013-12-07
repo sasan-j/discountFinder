@@ -90,9 +90,6 @@ public class InsertData extends Activity {
 	private EditText mPlaceEdit;
 	private EditText mLocationEdit;
 	private EditText mViewsEdit;
-	private TextView mPlaceInfo;
-	private TextView mLocationInfo;
-	private TextView mViewsInfo;
 	private String mLatitude = null;
 	private String mLongitude = null;
 	InsertData CameraActivity = null;
@@ -300,11 +297,6 @@ public class InsertData extends Activity {
 		mPlaceEdit = (EditText) findViewById(R.id.place_name);
 		mLocationEdit = (EditText) findViewById(R.id.location);
 		mViewsEdit = (EditText) findViewById(R.id.your_view);
-		mPlaceInfo = (TextView) findViewById(R.id.place_name_info);
-		mLocationInfo = (TextView) findViewById(R.id.location_info);
-		mViewsInfo = (TextView) findViewById(R.id.your_view_info);
-		Log.d(LOG_TAG, "mLocInformation: " + mLocationInfo);
-		Log.d(LOG_TAG, "mViewInfo: " + mViewsInfo);
 		mSearch = getString(R.string.search);
 		mPublish = getString(R.string.publish);
 		Log.d(LOG_TAG, "Strings for Search and publish: " + mSearch + " : "
@@ -313,12 +305,7 @@ public class InsertData extends Activity {
 		initButton();
 		// instantiate rating bar and add listener.
 		initRatingBar();
-		mPlaceEdit.setVisibility(View.VISIBLE);
-		mLocationEdit.setVisibility(View.VISIBLE);
-		mViewsEdit.setVisibility(View.VISIBLE);
-		mPlaceInfo.setVisibility(View.GONE);
-		mLocationInfo.setVisibility(View.GONE);
-		mViewsInfo.setVisibility(View.GONE);
+
 
 
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.FROYO) {

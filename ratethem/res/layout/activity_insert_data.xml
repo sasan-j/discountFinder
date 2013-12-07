@@ -54,20 +54,9 @@
         android:layout_marginLeft="5dp"
         android:ems="10"
         android:inputType="textPersonName"
-        android:visibility="gone" />
+        android:visibility="visible" />
 
-    <TextView
-        android:id="@+id/place_name_info"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@id/place_name_txt"
-        android:layout_centerVertical="true"
-        android:layout_marginLeft="5dp"
-        android:layout_marginTop="20dp"
-        android:textStyle="italic"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:visibility="gone" />
+
 
     <TextView
         android:id="@+id/location_txt"
@@ -90,20 +79,9 @@
         android:layout_marginLeft="5dp"
         android:ems="10"
         android:inputType="textPersonName"
-        android:visibility="gone" />
+        android:visibility="visible" />
 
-    <TextView
-        android:id="@+id/location_info"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@id/location_txt"
-        android:layout_centerVertical="true"
-        android:layout_marginLeft="5dp"
-        android:layout_marginTop="20dp"
-        android:textStyle="italic"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:visibility="gone" />
+
 
     <TextView
         android:id="@+id/your_view_txt"
@@ -125,19 +103,9 @@
         android:layout_marginLeft="5dp"
         android:ems="10"
         android:inputType="textMultiLine"
-        android:visibility="gone" />
+        android:visibility="visible" />
 
-    <TextView
-        android:id="@+id/your_view_info"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@id/your_view_txt"
-        android:layout_marginLeft="5dp"
-        android:layout_marginTop="20dp"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textStyle="italic"
-        android:visibility="gone" />
+
 
     <ImageButton
         android:id="@+id/Done"

@@ -16,7 +16,7 @@ public class RateContentProvider extends ContentProvider {
 
 	private static final String TABLE_NAME = "Items";
 
-	private static final int DATABASE_VERSION = 1;
+	private static final int DATABASE_VERSION = 2;
 
 	private SQLiteDatabase mSqlDb;
 
@@ -32,7 +32,7 @@ public class RateContentProvider extends ContentProvider {
 		public void onCreate(SQLiteDatabase db) {
 			db.execSQL("Create table "
 					+ TABLE_NAME
-					+ "( _id INTEGER PRIMARY KEY AUTOINCREMENT, item_name TEXT, item_pic BLOB, item_rating TEXT, item_place_name TEXT, item_location TEXT, item_location_latitude TEXT, item_location_longitude TEXT, item_comment TEXT);");
+					+ "( _id INTEGER PRIMARY KEY AUTOINCREMENT, item_name TEXT, item_pic TEXT, item_rating TEXT, item_place_name TEXT, item_location TEXT, item_location_latitude TEXT, item_location_longitude TEXT, item_comment TEXT);");
 		}
 
 		@Override
