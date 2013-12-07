@@ -5,7 +5,7 @@
     android:orientation="vertical" >
 
     <TextView
-        android:id="@+id/textView1"
+        android:id="@+id/discTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
@@ -17,7 +17,7 @@
         style="?android:attr/buttonStyleSmall"
         android:layout_width="100dp"
         android:layout_height="30dp"
-        android:layout_below="@id/textView1"
+        android:layout_below="@id/discTitle"
         android:layout_marginTop="40dp"
         android:layout_centerHorizontal="true"
         android:background="@drawable/food" />

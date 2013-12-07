@@ -1,6 +1,5 @@
 package com.android.ratethem;
 
-import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -165,7 +164,7 @@ public class SearchList extends ListActivity {
 			getInformationFromCursor(position);
 			// Uncomment this when server available.
 //			getInformationFromServer(position);
-			Intent intent = new Intent(SearchList.this, InsertData.class);
+			Intent intent = new Intent(SearchList.this, SearchItemView.class);
 			intent.putExtra(RateThemUtil.ITEM_PLACE_NAME, mPlaceName);
 			intent.putExtra(RateThemUtil.ITEM_PIC, mPicPath);
 			intent.putExtra(RateThemUtil.ITEM_COMMENT, mComments);
