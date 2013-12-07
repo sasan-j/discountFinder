@@ -17,7 +17,9 @@ import android.content.ContentProviderClient;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.RemoteException;
@@ -220,24 +222,24 @@ public class SearchList extends ListActivity {
 		@Override
 		public void bindView(View view, Context context, Cursor cursor) {
 			ImageView icon = (ImageView) view.findViewById(R.id.pic);
+			String picPath = cursor.getString(cursor
+					.getColumnIndex(RateAgent.RateProvider.ITEM_PIC));
+			if (picPath != null) {
+			    Drawable d = getResources().getDrawable(R.drawable.no_image);
+			    //Log.d("ratethem", "heigh is : "+(d.getIntrinsicHeight()));
+			    /* Decode the JPEG file into a Bitmap */
+				Bitmap mImageBitmap = BitmapFactory.decodeFile(picPath);
+				icon.setImageBitmap(Bitmap.createScaledBitmap(mImageBitmap, d.getIntrinsicWidth(), d.getIntrinsicHeight(), false));
+			}
+			
 			TextView locInfo = (TextView) view.findViewById(R.id.loc_info);
 			RatingBar rate = (RatingBar) view.findViewById(R.id.ratingBar);
 			rate.setNumStars(5);
 
 			locInfo.setText(cursor.getString(cursor
 					.getColumnIndex(RateAgent.RateProvider.ITEM_LOC)));
-			String rating = cursor.getString(cursor
-					.getColumnIndex(RateAgent.RateProvider.ITEM_RATING));
-			Log.d(TAG, "Get rating: " + rating);
-			Log.d(TAG, "Get rating in float: " + Float.parseFloat(rating));
 			rate.setRating(Float.parseFloat(cursor.getString(cursor
 					.getColumnIndex(RateAgent.RateProvider.ITEM_RATING))));
-			String picPath = cursor.getString(cursor
-					.getColumnIndex(RateAgent.RateProvider.ITEM_PIC));
-			if (picPath != null) {
-				icon.setImageBitmap(BitmapFactory.decodeFile(picPath));
-			}
-
 		}
 
 		@Override

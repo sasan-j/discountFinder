@@ -277,7 +277,7 @@ public class InsertData extends Activity {
 		
 		
 		mImageView.setImageBitmap(Bitmap.createScaledBitmap(mImageBitmap,
-				mImageView.getWidth(), mImageView.getHeight(), false));
+				mImageView.getMaxWidth(), mImageView.getMaxHeight(), false));
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////
