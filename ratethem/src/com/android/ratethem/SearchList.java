@@ -54,7 +54,7 @@ public class SearchList extends ListActivity {
 	
 	private String mRating = null;
 	
-	private byte[] mBlob = null;
+	private String mPicPath = null;
 	
 	private String mLocation = null;
 	
@@ -103,7 +103,7 @@ public class SearchList extends ListActivity {
 			try {
 			for(int i = 0; i < jArray.length(); i++){				
 					JSONObject itemName = jArray.getJSONObject(i);
-					list.add(new ItemInfo(itemName.getString(RateThemUtil.ITEM_NAME), itemName.getString(RateThemUtil.ITEM_RATING), itemName.get(RateThemUtil.ITEM_PIC)));
+					list.add(new ItemInfo(itemName.getString(RateThemUtil.ITEM_NAME), itemName.getString(RateThemUtil.ITEM_RATING), itemName.getString(RateThemUtil.ITEM_PIC)));
 					
 			}
 			} catch (JSONException e) {
@@ -129,7 +129,7 @@ public class SearchList extends ListActivity {
 				.getColumnIndex(RateAgent.RateProvider.ITEM_COMMENT));
 		mLocation = cursor.getString(cursor
 				.getColumnIndex(RateAgent.RateProvider.ITEM_LOC));
-		mBlob = cursor.getBlob(cursor
+		mPicPath = cursor.getString(cursor
 				.getColumnIndex(RateAgent.RateProvider.ITEM_PIC));
 		mRating = cursor.getString(cursor
 				.getColumnIndex(RateAgent.RateProvider.ITEM_RATING));
@@ -144,7 +144,7 @@ public class SearchList extends ListActivity {
 				mPlaceName = itemName.getString(RateThemUtil.ITEM_NAME);
 				mComments = itemName.getString(RateThemUtil.ITEM_COMMENT);
 				mLocation = itemName.getString(RateThemUtil.ITEM_LOC);
-//				mBlob = itemName.get(RateThemUtil.ITEM_PIC);
+				mPicPath = itemName.getString(RateThemUtil.ITEM_PIC);
 				mRating = itemName.getString(RateThemUtil.ITEM_RATING);	
 				
 		}
@@ -165,7 +165,7 @@ public class SearchList extends ListActivity {
 //			getInformationFromServer(position);
 			Intent intent = new Intent(SearchList.this, InsertData.class);
 			intent.putExtra(RateThemUtil.ITEM_PLACE_NAME, mPlaceName);
-			intent.putExtra(RateThemUtil.ITEM_PIC, mBlob);
+			intent.putExtra(RateThemUtil.ITEM_PIC, mPicPath);
 			intent.putExtra(RateThemUtil.ITEM_COMMENT, mComments);
 			intent.putExtra(RateThemUtil.ITEM_LOC, mLocation);
 			intent.putExtra(RateThemUtil.ITEM_RATING, mRating);
@@ -201,7 +201,8 @@ public class SearchList extends ListActivity {
 			
 			ItemInfo item = mItems.get(position);
 			if(item != null){
-				Object blob = item.getPicture();
+				String picPath = item.getPicture();
+				icon.setImageBitmap(BitmapFactory.decodeFile(picPath));
 				itemInfo.setText(item.getName());
 				rate.setRating(Float.parseFloat(item.getRating()));
 			}
@@ -231,11 +232,10 @@ public class SearchList extends ListActivity {
 			Log.d(TAG, "Get rating in float: " + Float.parseFloat(rating));
 			rate.setRating(Float.parseFloat(cursor.getString(cursor
 					.getColumnIndex(RateAgent.RateProvider.ITEM_RATING))));
-			byte[] blob = cursor.getBlob(cursor
+			String picPath = cursor.getString(cursor
 					.getColumnIndex(RateAgent.RateProvider.ITEM_PIC));
-			if (blob != null) {
-				icon.setImageBitmap(BitmapFactory
-						.decodeStream(new ByteArrayInputStream(blob)));
+			if (picPath != null) {
+				icon.setImageBitmap(BitmapFactory.decodeFile(picPath));
 			}
 
 		}

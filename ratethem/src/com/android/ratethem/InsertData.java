@@ -9,6 +9,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.Currency;
 import java.util.Date;
 import java.util.List;
 
@@ -77,7 +78,7 @@ public class InsertData extends Activity {
 
 	
 
-	private static final int FILE = 7;
+	//private static final int FILE = 7;
 	public static final Uri RATE_URI = Uri
 			.parse("content://com.android.ratethem.providers.RateContentProvider"
 					+ "/" + RateAgent.RateProvider.TABLE_NAME);
@@ -272,7 +273,11 @@ public class InsertData extends Activity {
 		/* Decode the JPEG file into a Bitmap */
 		mImageBitmap = BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
 		/* Associate the Bitmap to the ImageView */
-		mImageView.setImageBitmap(mImageBitmap);
+		//mImageView.setImageBitmap(mImageBitmap);
+		
+		
+		mImageView.setImageBitmap(Bitmap.createScaledBitmap(mImageBitmap,
+				mImageView.getWidth(), mImageView.getHeight(), false));
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////
@@ -313,39 +318,6 @@ public class InsertData extends Activity {
 		} else {
 			mAlbumStorageDirFactory = new BaseAlbumDirFactory();
 		}
-
-		// Since this activity is used for both posting data and displaying data
-		// certain items are made visible and invisible based on criteria.
-		/*
-		if (mSearch.equals(mCriteria)) {
-			takepic.setVisibility(View.GONE);
-			done.setVisibility(View.GONE);
-			mPlaceEdit.setVisibility(View.GONE);
-			mLocationEdit.setVisibility(View.GONE);
-			mViewsEdit.setVisibility(View.GONE);
-			mPlaceInfo.setVisibility(View.VISIBLE);
-			mLocationInfo.setVisibility(View.VISIBLE);
-			mViewsInfo.setVisibility(View.VISIBLE);
-			String placeInfo = extras.getString(RateThemUtil.ITEM_PLACE_NAME);
-			String locationInfo = extras.getString(RateThemUtil.ITEM_LOC);
-			String rateInfo = extras.getString(RateThemUtil.ITEM_RATING);
-			String commentInfo = extras.getString(RateThemUtil.ITEM_COMMENT);
-			byte[] picInfo = extras.getByteArray(RateThemUtil.ITEM_PIC);
-			mPlaceInfo.setText(placeInfo);
-			mImage.setImageBitmap(BitmapFactory
-					.decodeStream(new ByteArrayInputStream(picInfo)));
-			mLocationInfo.setText(locationInfo);
-			mViewsInfo.setText(commentInfo);
-			ratingBar.setRating(Float.parseFloat(rateInfo));
-		} else if (mPublish.equals(mCriteria)) {
-			mPlaceEdit.setVisibility(View.VISIBLE);
-			mLocationEdit.setVisibility(View.VISIBLE);
-			mViewsEdit.setVisibility(View.VISIBLE);
-			mPlaceInfo.setVisibility(View.GONE);
-			mLocationInfo.setVisibility(View.GONE);
-			mViewsInfo.setVisibility(View.GONE);
-
-		}*/
 
 	}
 
@@ -436,7 +408,7 @@ public class InsertData extends Activity {
 			ContentValues cv = new ContentValues();
 			cv.put(RateAgent.RateProvider.ITEM_NAME, mItemName);
 			cv.put(RateAgent.RateProvider.ITEM_PLACE_NAME, mPlaceInformation);
-			//cv.put(RateAgent.RateProvider.ITEM_PIC, getImageByte());
+			cv.put(RateAgent.RateProvider.ITEM_PIC, mCurrentPhotoPath);
 			cv.put(RateAgent.RateProvider.ITEM_RATING, mRatings);
 			cv.put(RateAgent.RateProvider.ITEM_LOC, mLocationInformation);
 			cv.put(RateAgent.RateProvider.ITEM_COMMENT, mYourViews);
@@ -462,7 +434,7 @@ public class InsertData extends Activity {
 		try {
 			json.put(RateThemUtil.ITEM_NAME, mItemName);
 			json.put(RateThemUtil.ITEM_PLACE_NAME, mPlaceInformation);
-			//json.put(RateThemUtil.ITEM_PIC, getImageByte());
+			json.put(RateThemUtil.ITEM_PIC, mCurrentPhotoPath);
 			json.put(RateThemUtil.ITEM_RATING, mRatings);
 			json.put(RateThemUtil.ITEM_LOC, mLocationInformation);
 			json.put(RateThemUtil.ITEM_COMMENT, mYourViews);

@@ -9,9 +9,9 @@ public class ItemInfo {
 	
 	private String mRate = null;
 	
-	private Object mPic = null;
+	private String mPic = null;
 	
-	public ItemInfo(String name, String rate, Object pic){
+	public ItemInfo(String name, String rate, String pic){
 		this.mName = name;
 		this.mRate = rate;
 		this.mPic = pic;
@@ -25,7 +25,7 @@ public class ItemInfo {
 		return mRate;
 	}
 	
-	public Object getPicture(){
+	public String getPicture(){
 		return mPic;
 	}
 
