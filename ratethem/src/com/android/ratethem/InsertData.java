@@ -34,6 +34,7 @@ import android.content.pm.ResolveInfo;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
@@ -276,8 +277,11 @@ public class InsertData extends Activity {
 		//mImageView.setImageBitmap(mImageBitmap);
 		
 		
-		mImageView.setImageBitmap(Bitmap.createScaledBitmap(mImageBitmap,
-				mImageView.getMaxWidth(), mImageView.getMaxHeight(), false));
+	    Drawable d = getResources().getDrawable(R.drawable.no_image);
+	    mImageView.setImageBitmap(Bitmap.createScaledBitmap(mImageBitmap, d.getIntrinsicWidth(), d.getIntrinsicHeight(), false));
+		
+		//mImageView.setImageBitmap(Bitmap.createScaledBitmap(mImageBitmap,
+		//		mImageView.getMaxWidth(), mImageView.getMaxHeight(), false));
 	}
 	
 	///////////////////////////////////////////////////////////////////////////////////////
