@@ -69,10 +69,13 @@ public class SearchItemView extends Activity {
         discLocation.setText(discLocationTxt);
         //discRating
         userView.setText(userViewTxt);
-		Bitmap mImageBitmap = BitmapFactory.decodeFile(discImagePath);
-		//discImage.setImageBitmap(Bitmap.createScaledBitmap(mImageBitmap, discImage.getWidth(), discImage.getHeight(), false));
-	    Drawable d = getResources().getDrawable(R.drawable.no_image);
-	    discImage.setImageBitmap(Bitmap.createScaledBitmap(mImageBitmap, d.getIntrinsicWidth(), d.getIntrinsicHeight(), false));
+        if(discImagePath!=null){
+    		Bitmap mImageBitmap = BitmapFactory.decodeFile(discImagePath);
+    		//discImage.setImageBitmap(Bitmap.createScaledBitmap(mImageBitmap, discImage.getWidth(), discImage.getHeight(), false));
+    	    Drawable d = getResources().getDrawable(R.drawable.no_image);
+    	    discImage.setImageBitmap(Bitmap.createScaledBitmap(mImageBitmap, d.getIntrinsicWidth(), d.getIntrinsicHeight(), false));
+        }
+
 		// Show the Up button in the action bar.
 		//setupActionBar();
         
