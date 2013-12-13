@@ -25,6 +25,8 @@ public class RateThemUtil {
 	public static final String _ID = "_id";
 
 	public static final String ITEM_NAME = "item_name";
+	
+	public static final String ITEM_CATEGORY = "item_category";
 
 	public static final String ITEM_PIC = "item_pic";
 

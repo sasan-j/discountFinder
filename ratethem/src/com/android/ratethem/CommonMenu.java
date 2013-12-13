@@ -109,10 +109,10 @@ public class CommonMenu extends Activity {
 	 * @param view
 	 * @param itemName
 	 */
-	private void startInsertData(View view, String itemName){
+	private void startInsertData(View view, String categoryName){
 		Intent intent = new Intent(view.getContext(), InsertData.class);
 		intent.putExtra(RateThemUtil.CRITERIA, mCriteria);
-		intent.putExtra(RateThemUtil.ITEM_NAME, itemName);
+		intent.putExtra(RateThemUtil.ITEM_CATEGORY, categoryName);
 		startActivity(intent);
 		finish();
 	}

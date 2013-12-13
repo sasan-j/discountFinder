@@ -65,6 +65,7 @@ public class SearchItemView extends Activity {
 		discLocation = (TextView) findViewById(R.id.discLocation);
 		userView = (TextView)findViewById(R.id.userOpinion);
 		
+		discTitle.setText(mItemName);
         discPlace.setText(discPlaceTxt);
         discLocation.setText(discLocationTxt);
         //discRating

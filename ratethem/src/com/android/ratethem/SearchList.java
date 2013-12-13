@@ -46,6 +46,8 @@ public class SearchList extends ListActivity {
 	private ArrayList <ItemInfo> list = new ArrayList<ItemInfo>();
 
 	private String mItemName = null;
+	
+	private String mItemCategory = null;
 
 	private RateAdapter mAdapter;
 
@@ -65,7 +67,8 @@ public class SearchList extends ListActivity {
 		super.onCreate(savedInstanceState);
 		Bundle extras = getIntent().getExtras();
 		if (extras != null) {
-			mItemName = extras.getString(RateThemUtil.ITEM_NAME);
+			//mItemName = extras.getString(RateThemUtil.ITEM_NAME);
+			mItemCategory = extras.getString(RateThemUtil.ITEM_CATEGORY);
 			mCriteria = extras.getString(RateThemUtil.CRITERIA);
 		}
 		setTitle(mItemName);
@@ -84,7 +87,7 @@ public class SearchList extends ListActivity {
 		Cursor cursor = null;
 		try {
 			cursor = client.query(RateThemUtil.RATE_URI, null,
-					RateAgent.RateProvider.ITEM_NAME + "=\"" + mItemName + "\"",
+					RateAgent.RateProvider.ITEM_CATEGORY + "=\"" + mItemCategory + "\"",
 					null, null);
 		} catch (RemoteException e) {
 			// TODO Auto-generated catch block
@@ -104,8 +107,7 @@ public class SearchList extends ListActivity {
 			try {
 			for(int i = 0; i < jArray.length(); i++){				
 					JSONObject itemName = jArray.getJSONObject(i);
-					list.add(new ItemInfo(itemName.getString(RateThemUtil.ITEM_NAME), itemName.getString(RateThemUtil.ITEM_RATING), itemName.getString(RateThemUtil.ITEM_PIC)));
-					
+					list.add(new ItemInfo(itemName.getString(RateThemUtil.ITEM_NAME), itemName.getString(RateThemUtil.ITEM_RATING), itemName.getString(RateThemUtil.ITEM_PIC)));	
 			}
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
@@ -124,12 +126,14 @@ public class SearchList extends ListActivity {
 	private void getInformationFromCursor(int position){
 		Cursor cursor = mAdapter.getCursor();
 		cursor.moveToPosition(position);
+		mItemName = cursor.getString(cursor
+				.getColumnIndex(RateAgent.RateProvider.ITEM_NAME));
 		mPlaceName = cursor.getString(cursor
 				.getColumnIndex(RateAgent.RateProvider.ITEM_PLACE_NAME));
-		mComments = cursor.getString(cursor
-				.getColumnIndex(RateAgent.RateProvider.ITEM_COMMENT));
 		mLocation = cursor.getString(cursor
 				.getColumnIndex(RateAgent.RateProvider.ITEM_LOC));
+		mComments = cursor.getString(cursor
+				.getColumnIndex(RateAgent.RateProvider.ITEM_COMMENT));
 		mPicPath = cursor.getString(cursor
 				.getColumnIndex(RateAgent.RateProvider.ITEM_PIC));
 		mRating = cursor.getString(cursor
@@ -165,10 +169,11 @@ public class SearchList extends ListActivity {
 			// Uncomment this when server available.
 //			getInformationFromServer(position);
 			Intent intent = new Intent(SearchList.this, SearchItemView.class);
+			intent.putExtra(RateThemUtil.ITEM_NAME, mItemName);
 			intent.putExtra(RateThemUtil.ITEM_PLACE_NAME, mPlaceName);
+			intent.putExtra(RateThemUtil.ITEM_LOC, mLocation);
 			intent.putExtra(RateThemUtil.ITEM_PIC, mPicPath);
 			intent.putExtra(RateThemUtil.ITEM_COMMENT, mComments);
-			intent.putExtra(RateThemUtil.ITEM_LOC, mLocation);
 			intent.putExtra(RateThemUtil.ITEM_RATING, mRating);
 			intent.putExtra(RateThemUtil.CRITERIA, mCriteria);
 			startActivity(intent);
@@ -236,7 +241,7 @@ public class SearchList extends ListActivity {
 			rate.setNumStars(5);
 
 			locInfo.setText(cursor.getString(cursor
-					.getColumnIndex(RateAgent.RateProvider.ITEM_LOC)));
+					.getColumnIndex(RateAgent.RateProvider.ITEM_NAME)));
 			rate.setRating(Float.parseFloat(cursor.getString(cursor
 					.getColumnIndex(RateAgent.RateProvider.ITEM_RATING))));
 		}
