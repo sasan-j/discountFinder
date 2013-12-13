@@ -7,12 +7,23 @@ import com.android.ratethem.util.*;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Currency;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.mime.HttpMultipartMode;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
+import org.apache.http.entity.mime.content.FileBody;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -64,7 +75,7 @@ public class InsertData extends Activity {
 	private ImageButton takepic, done;
 	protected static final String LOG_TAG = "ratethem";
 	private RatingBar ratingBar;
-	private File mImageFile;
+	private File mImageFile = null;
 	private String mItemName = null;
 
 	//for image capturing
@@ -72,20 +83,20 @@ public class InsertData extends Activity {
 	private static final String BITMAP_STORAGE_KEY = "viewbitmap";
 	private ImageView mImageView;
 	private Bitmap mImageBitmap;
-	private String mCurrentPhotoPath;
+	private String mCurrentPhotoPath = null;
 	private static final String JPEG_FILE_PREFIX = "IMG_";
 	private static final String JPEG_FILE_SUFFIX = ".jpg";
 	private AlbumStorageDirFactory mAlbumStorageDirFactory = null;
 
-	
+
 
 	//private static final int FILE = 7;
 	public static final Uri RATE_URI = Uri
 			.parse("content://com.android.ratethem.providers.RateContentProvider"
 					+ "/" + RateAgent.RateProvider.TABLE_NAME);
-	
+
 	private static final String PICTURES_DIR = "photos";
-	
+
 	Uri imageUri = null;
 	static TextView imageDetails = null;
 	//private ImageView mImage;
@@ -104,17 +115,17 @@ public class InsertData extends Activity {
 	private String mLocationInformation = null;
 	private String mYourViews = null;
 
-	
+
 	///////////////////////////////////////////////////////////////////////////////
 	///////for capturing image ////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////////////////
-	
+
 	/* Photo album for this application */
 	private String getAlbumName() {
 		return getString(R.string.album_name);
 	}
 
-	
+
 	private File getAlbumDir() {
 		File storageDir = null;
 
@@ -130,11 +141,11 @@ public class InsertData extends Activity {
 					}
 				}
 			}
-			
+
 		} else {
 			Log.v(LOG_TAG, "External storage is not mounted READ/WRITE.");
 		}
-		
+
 		return storageDir;
 	}
 
@@ -157,24 +168,24 @@ public class InsertData extends Activity {
 		mCurrentPhotoPath = f.getAbsolutePath();
 		return f;
 	}
-	
+
 	private void dispatchTakePictureIntent(int actionCaptureImage) {
 		Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-			File f = null;
-			try {
-				Log.d(LOG_TAG, "before setupphotofile");
-				f = setUpPhotoFile();
-				Log.d(LOG_TAG, "after setupphotofile");
-				mCurrentPhotoPath = f.getAbsolutePath();
-				takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(f));
-			} catch (IOException e) {
-				e.printStackTrace();
-				f = null;
-				mCurrentPhotoPath = null;
-			}
+		File f = null;
+		try {
+			Log.d(LOG_TAG, "before setupphotofile");
+			f = setUpPhotoFile();
+			Log.d(LOG_TAG, "after setupphotofile");
+			mCurrentPhotoPath = f.getAbsolutePath();
+			takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(f));
+		} catch (IOException e) {
+			e.printStackTrace();
+			f = null;
+			mCurrentPhotoPath = null;
+		}
 		startActivityForResult(takePictureIntent, actionCaptureImage);
 	}
-	
+
 	/*
 	 * Method to capture data sent back from activity launched by
 	 * startActivityResult.
@@ -186,15 +197,20 @@ public class InsertData extends Activity {
 			if (resultCode == RESULT_OK) {
 				//handleBigCameraPhoto();
 				Log.d(LOG_TAG, "Result is ok and being handled");
-				setPic();
+				try {
+					setPic();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 			break;
 		}//ACTION_CAPTURE_IMAGE
 
 		} // switch
 	}
-	
-	
+
+
 	/**
 	 * Indicates whether the specified action can be used as an intent. This
 	 * method queries the package manager for installed packages that can
@@ -212,8 +228,8 @@ public class InsertData extends Activity {
 		final PackageManager packageManager = context.getPackageManager();
 		final Intent intent = new Intent(action);
 		List<ResolveInfo> list =
-			packageManager.queryIntentActivities(intent,
-					PackageManager.MATCH_DEFAULT_ONLY);
+				packageManager.queryIntentActivities(intent,
+						PackageManager.MATCH_DEFAULT_ONLY);
 		return list.size() > 0;
 	}
 	/*
@@ -230,21 +246,21 @@ public class InsertData extends Activity {
 			btn.setClickable(false);
 		}
 	}
-	*/
-	
+	 */
+
 	private void setBtnListenerOrDisable( 
 			ImageButton imgBtn, 
 			ImageButton.OnClickListener onClickListener,
 			String intentName
-	) {
+			) {
 		if (isIntentAvailable(this, intentName)) {
 			imgBtn.setOnClickListener(onClickListener);        	
 		} else {
 			imgBtn.setClickable(false);
 		}
 	}
-	
-	private void setPic() {
+
+	private void setPic() throws IOException {
 
 		/* There isn't enough memory to open up more than a couple camera photos */
 		/* So pre-scale the target bitmap into which the file is decoded */
@@ -259,7 +275,7 @@ public class InsertData extends Activity {
 		BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
 		int photoW = bmOptions.outWidth;
 		int photoH = bmOptions.outHeight;
-		
+
 		/* Figure out which way needs to be reduced less */
 		int scaleFactor = 1;
 		if ((targetW > 0) || (targetH > 0)) {
@@ -276,22 +292,36 @@ public class InsertData extends Activity {
 		/* Associate the Bitmap to the ImageView */
 		//mImageView.setImageBitmap(mImageBitmap);
 		
+		//resaving file with low resolution
+		OutputStream fOut = null;
+		File file = new File(mCurrentPhotoPath);
+		try {
+			fOut = new FileOutputStream(file);
+			mImageBitmap.compress(Bitmap.CompressFormat.JPEG, 85, fOut);
+			fOut.flush();
+			fOut.close();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 		
-	    Drawable d = getResources().getDrawable(R.drawable.no_image);
-	    mImageView.setImageBitmap(Bitmap.createScaledBitmap(mImageBitmap, d.getIntrinsicWidth(), d.getIntrinsicHeight(), false));
-		
+
+		Drawable d = getResources().getDrawable(R.drawable.no_image);
+		mImageView.setImageBitmap(Bitmap.createScaledBitmap(mImageBitmap, d.getIntrinsicWidth(), d.getIntrinsicHeight(), false));
+
 		//mImageView.setImageBitmap(Bitmap.createScaledBitmap(mImageBitmap,
 		//		mImageView.getMaxWidth(), mImageView.getMaxHeight(), false));
 	}
-	
+
 	///////////////////////////////////////////////////////////////////////////////////////
-	
-	
+
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_insert_data);
-		
+
 		if( savedInstanceState != null ) {
 			Toast.makeText(this, savedInstanceState .getString("message"), Toast.LENGTH_LONG).show();
 		}
@@ -333,7 +363,7 @@ public class InsertData extends Activity {
 		outState.putParcelable(BITMAP_STORAGE_KEY, mImageBitmap);
 		super.onSaveInstanceState(outState);
 	}
-	
+
 	@Override
 	protected void onRestoreInstanceState(Bundle savedInstanceState) {
 		super.onRestoreInstanceState(savedInstanceState);
@@ -348,7 +378,7 @@ public class InsertData extends Activity {
 				takepic, 
 				TakePicListner,
 				MediaStore.ACTION_IMAGE_CAPTURE
-		);
+				);
 		// Display button click listener
 		//takepic.setOnClickListener((OnClickListener) TakePicListner);
 
@@ -357,11 +387,11 @@ public class InsertData extends Activity {
 
 	}
 
-	
+
 	private View.OnClickListener DoneListener = new View.OnClickListener() {
 		@Override
 		public void onClick(View v) {
-			insertInformation();
+			insertInformation(v);
 			Toast.makeText(v.getContext(), "Information added!!!",
 					Toast.LENGTH_SHORT).show();
 			finish();
@@ -371,9 +401,7 @@ public class InsertData extends Activity {
 	private View.OnClickListener TakePicListner = new View.OnClickListener() {
 		@Override
 		public void onClick(View v) {
-		
 			dispatchTakePictureIntent(ACTION_CAPTURE_IMAGE);
-
 		}
 	};
 
@@ -381,7 +409,7 @@ public class InsertData extends Activity {
 	/**
 	 * Push information to either database or server.
 	 */
-	private void insertInformation() {
+	private void insertInformation(View v) {
 		mPlaceInformation = mPlaceEdit.getText().toString();
 		mLocationInformation = mLocationEdit.getText().toString();
 		mYourViews = mViewsEdit.getText().toString();
@@ -401,7 +429,11 @@ public class InsertData extends Activity {
 		insertToDb();
 
 		// Below commented code must be uncommented when server insert is ready.
-		// insertToServer();
+		//insertToServer();			
+		new SendToServerTask().execute("bla bla");
+		//sendFormToServer(v);
+		//Toast.makeText(v.getContext(), ,
+		//		Toast.LENGTH_SHORT).show();
 	}
 
 	/**
@@ -428,28 +460,69 @@ public class InsertData extends Activity {
 		}
 	}
 
-	/**
-	 * Insert information to server.
-	 */
-	private void insertToServer() {
-		ServerPost svPost = new ServerPost();
-		JSONObject json = new JSONObject();
-		JSONArray jsonArray = new JSONArray();
-		try {
-			json.put(RateThemUtil.ITEM_NAME, mItemName);
-			json.put(RateThemUtil.ITEM_PLACE_NAME, mPlaceInformation);
-			json.put(RateThemUtil.ITEM_PIC, mCurrentPhotoPath);
-			json.put(RateThemUtil.ITEM_RATING, mRatings);
-			json.put(RateThemUtil.ITEM_LOC, mLocationInformation);
-			json.put(RateThemUtil.ITEM_COMMENT, mYourViews);
+	protected String sendFormToServer(){
 
-			jsonArray.put(json);
-			JSONObject jObject = new JSONObject();
-			jObject.put(RateThemUtil.TABLE_NAME, jsonArray);
-			svPost.pushDataToServer(RateThemUtil.SERVER_URL, jObject);
-		} catch (JSONException e) {
-			e.printStackTrace();
+		String url = "http://df.jafarnejad.org/discounts/post_discount/"; 
+
+		try {
+			HttpClient httpclient = new DefaultHttpClient();
+			HttpPost httppost = new HttpPost(url);
+			//MultipartEntity reqEntity = new MultipartEntity();
+			MultipartEntityBuilder multipartEntity = MultipartEntityBuilder.create();
+
+			/*
+			String in = item_name.getText().toString();
+			String r = rate.getText().toString();
+			String lt = location_txt.getText().toString();
+			String la = latitude.getText().toString();
+			String lo = longitude.getText().toString();
+			String id = user_id.getText().toString();
+			 */
+			multipartEntity.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
+			multipartEntity.addTextBody("item_name", mItemName);
+			multipartEntity.addTextBody("place_name", mPlaceInformation);
+			multipartEntity.addTextBody("rate", mRatings);
+			multipartEntity.addTextBody("location_txt", mLocationInformation);
+			multipartEntity.addTextBody("latitude", "567587");
+			multipartEntity.addTextBody("longitude", "657543");
+			multipartEntity.addTextBody("user_id", "test1");
+
+			if(mCurrentPhotoPath != null){
+				//for image
+				//AssetManager assetManager = getAssets();
+				//String fileList[] = assetManager.list("tt");
+				//Environment.getDataDirectory()
+				/*
+			File outputDir = getApplication().getCacheDir(); // context being the Activity pointer
+			File outputFile = File.createTempFile("prefix", "txt", outputDir);
+			FileWriter writer = new FileWriter(outputFile, true);
+			try {
+			    writer.write("append here\n");
+			} finally {
+			   writer.close();
+			}*/
+				mImageFile = new File(mCurrentPhotoPath);
+				multipartEntity.addPart("userfile", new FileBody(mImageFile));
+			}
+			httppost.setEntity(multipartEntity.build());
+			HttpResponse response = httpclient.execute(httppost);
+			if (response.getStatusLine().getStatusCode() > 202 ) {
+				Log.d(LOG_TAG,response.getStatusLine().toString());
+				return response.getStatusLine().toString();
+			} else {
+				//				//removing files that were sent
+				//				for (File f : zipfiles){
+				//					f.delete();
+				//				}
+				Log.d(LOG_TAG,response.getStatusLine().toString());
+				return response.getStatusLine().toString();
+			}
+
+		} catch (Exception e) {
+			Log.d(LOG_TAG,e.toString());
+			return e.toString();
 		}
+		//Looper.loop();
 	}
 
 
@@ -471,6 +544,31 @@ public class InsertData extends Activity {
 			}
 		});
 
+	}
+	
+	// Uses AsyncTask to create a task away from the main UI thread. This task takes a 
+	// URL string and uses it to create an HttpUrlConnection. Once the connection
+	// has been established, the AsyncTask downloads the contents of the webpage as
+	// an InputStream. Finally, the InputStream is converted into a string, which is
+	// displayed in the UI by the AsyncTask's onPostExecute method.
+	private class SendToServerTask extends AsyncTask<String, Void, String> {
+	   @Override
+	   protected String doInBackground(String... urls) {
+	         
+	       // params comes from the execute() call: params[0] is the url.
+//	       try {
+	           return sendFormToServer();
+//	       } catch (IOException e) {
+//	           return "Unable to retrieve web page. URL may be invalid.";
+//	       }
+	   }
+	   // onPostExecute displays the results of the AsyncTask.
+	   @Override
+	   protected void onPostExecute(String result) {
+	       //textView.setText(result);
+	       Toast.makeText(InsertData.this, result, Toast.LENGTH_LONG).show();
+
+	  }
 	}
 
 }
