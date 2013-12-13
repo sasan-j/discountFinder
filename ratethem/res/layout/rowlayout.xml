@@ -25,11 +25,11 @@
 
     <RatingBar
         android:id="@+id/ratingBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/pic"
         style="?android:attr/ratingBarStyleSmall"
+        android:layout_width="36dp"
+        android:layout_height="50dp"
         android:layout_below="@id/loc_info"
-        android:numStars="5"/>
+        android:layout_toRightOf="@id/pic"
+        android:numStars="5" />
     
 </RelativeLayout>
