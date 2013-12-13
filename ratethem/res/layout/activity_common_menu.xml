@@ -11,8 +11,7 @@
         android:layout_height="60dp"
         android:layout_marginTop="20dp"
         android:layout_weight="0.11"
-        android:text="  Click on the categories to rate"
-        android:textColor="@color/gray" />
+        android:text="  Click on the categories to rate"/>
 
     <TableLayout
         android:layout_width="150dp"

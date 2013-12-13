@@ -27,8 +27,6 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import com.android.ratethem.R;
 import com.android.ratethem.providers.RateAgent;
 import com.android.ratethem.server.ServerPost;
 import com.android.ratethem.util.RateThemUtil;
