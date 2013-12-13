@@ -16,7 +16,7 @@ public class RateContentProvider extends ContentProvider {
 
 	private static final String TABLE_NAME = "Items";
 
-	private static final int DATABASE_VERSION = 2;
+	private static final int DATABASE_VERSION = 1;
 
 	private SQLiteDatabase mSqlDb;
 

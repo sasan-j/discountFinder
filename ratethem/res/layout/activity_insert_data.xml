@@ -5,6 +5,29 @@
     android:gravity="fill"
     android:orientation="vertical" >
 
+        <EditText
+        android:id="@+id/item_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/ratingBar"
+        android:layout_below="@+id/ratingBar"
+        android:layout_marginTop="12dp"
+        android:ems="10"
+        android:hint="Item Name"
+        android:inputType="textPersonName"
+        android:visibility="visible" />
+    
+        <EditText
+        android:id="@+id/place_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/ratingBar"
+        android:layout_below="@+id/item_name"
+        android:layout_marginTop="12dp"
+        android:ems="10"
+        android:hint="Shop Name"
+        android:inputType="textPersonName"
+        android:visibility="visible" />
 
     <EditText
         android:id="@+id/location"
@@ -13,7 +36,7 @@
         android:layout_alignLeft="@+id/place_name"
         android:layout_below="@+id/place_name"
         android:ems="10"
-        android:hint="Item Location"
+        android:hint="Shop Location"
         android:inputType="textPersonName"
         android:visibility="visible" />
 
@@ -49,17 +72,7 @@
         android:layout_marginTop="25dp"
         android:src="@drawable/picture" />
 
-    <EditText
-        android:id="@+id/place_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/ratingBar"
-        android:layout_below="@+id/ratingBar"
-        android:layout_marginTop="12dp"
-        android:ems="10"
-        android:hint="Item Name"
-        android:inputType="textPersonName"
-        android:visibility="visible" />
+
 
     <ImageView
         android:id="@+id/showImg"

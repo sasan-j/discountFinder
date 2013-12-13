@@ -57,7 +57,6 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -98,9 +97,15 @@ public class InsertData extends Activity {
 	Uri imageUri = null;
 	static TextView imageDetails = null;
 	//private ImageView mImage;
+	private EditText mItemNameEdit;
 	private EditText mPlaceEdit;
 	private EditText mLocationEdit;
 	private EditText mViewsEdit;
+	
+	private String mItemNameInfo = null;
+	private String mPlaceInformation = null;
+	private String mLocationInformation = null;
+
 	private String mLatitude = null;
 	private String mLongitude = null;
 	InsertData CameraActivity = null;
@@ -108,9 +113,7 @@ public class InsertData extends Activity {
 	private String mCriteria = null;
 	private String mSearch = null;
 	private String mPublish = null;
-	private String mPlaceInformation = null;
 	private String mRatings = null;
-	private String mLocationInformation = null;
 	private String mYourViews = null;
 
 
@@ -331,9 +334,12 @@ public class InsertData extends Activity {
 		}
 		Log.d(LOG_TAG, "Criteria sent: " + mCriteria);
 		mImageView = (ImageView) findViewById(R.id.showImg);
+		
+		mItemNameEdit = (EditText) findViewById(R.id.item_name);
 		mPlaceEdit = (EditText) findViewById(R.id.place_name);
 		mLocationEdit = (EditText) findViewById(R.id.location);
 		mViewsEdit = (EditText) findViewById(R.id.your_view);
+		
 		mSearch = getString(R.string.search);
 		mPublish = getString(R.string.publish);
 		Log.d(LOG_TAG, "Strings for Search and publish: " + mSearch + " : "
@@ -408,6 +414,8 @@ public class InsertData extends Activity {
 	 * Push information to either database or server.
 	 */
 	private void insertInformation(View v) {
+		
+		mItemNameInfo = mItemNameEdit.getText().toString();
 		mPlaceInformation = mPlaceEdit.getText().toString();
 		mLocationInformation = mLocationEdit.getText().toString();
 		mYourViews = mViewsEdit.getText().toString();
@@ -441,6 +449,7 @@ public class InsertData extends Activity {
 		try {
 			ContentValues cv = new ContentValues();
 			cv.put(RateAgent.RateProvider.ITEM_NAME, mItemName);
+			//cv.put(RateAgent.RateProvider.ITEM_CATEGORY, mItemName);
 			cv.put(RateAgent.RateProvider.ITEM_PLACE_NAME, mPlaceInformation);
 			cv.put(RateAgent.RateProvider.ITEM_PIC, mCurrentPhotoPath);
 			cv.put(RateAgent.RateProvider.ITEM_RATING, mRatings);
