@@ -1,5 +1,8 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+ <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+     xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+<RelativeLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingBottom="@dimen/activity_vertical_margin"
@@ -26,7 +29,55 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="21dp"
         android:src="@drawable/no_image" />
-
+    
+        <RatingBar
+        android:id="@+id/ratingBar2"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/discImage"
+        android:numStars="5"
+        android:stepSize="0.5" />
+        
+        <TextView
+        android:id="@+id/DiscPlace"
+        android:layout_below="@+id/ratingBar2"
+        android:layout_marginTop="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:text="Shop name"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+        
+        <TextView
+        android:id="@+id/DiscPlaceLbl"
+        android:layout_below="@+id/DiscPlace"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="15dp"
+        android:text="Where?" />
+        
+ 
+    <TextView
+        android:id="@+id/discLocationLbl"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/DiscPlace"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="28dp"
+        android:text="Where exactly?" />
+    
+    <TextView
+        android:id="@+id/discLocation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/discLocationLbl"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:text="Address"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+    
     <TextView
         android:id="@+id/userOpinionLbl"
         android:layout_width="wrap_content"
@@ -44,43 +95,7 @@
         android:layout_alignLeft="@+id/userOpinionLbl"
         android:layout_below="@+id/userOpinionLbl"
         android:layout_marginTop="18dp"
-        android:text="Bla bla bla" />
-
-    <TextView
-        android:id="@+id/DiscPlaceLbl"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/discImage"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="17dp"
-        android:text="Where?" />
-
-    <TextView
-        android:id="@+id/DiscPlace"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:text="Shop name"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
-
-    <TextView
-        android:id="@+id/discLocationLbl"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/DiscPlace"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="28dp"
-        android:text="Where exactly?" />
-
-    <TextView
-        android:id="@+id/discLocation"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/discLocationLbl"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
-        android:text="Address"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:text="Bla bla bla" />  
 
 </RelativeLayout>
+</ScrollView>

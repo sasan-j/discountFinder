@@ -24,13 +24,18 @@
     <EditText
         android:id="@+id/your_view"
         android:layout_width="wrap_content"
-        android:layout_height="180dp"
+        android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/location"
         android:layout_below="@+id/location"
         android:ems="10"
         android:hint="Your View"
-        android:inputType="textMultiLine"
-        android:visibility="visible" />
+        android:gravity="top"
+        android:lines="6"
+        android:visibility="visible" 
+        android:scrollbarStyle="insideInset"
+		android:scrollbars="vertical" 
+		android:overScrollMode="always"
+        />
 
     <ImageButton
         android:id="@+id/Done"
