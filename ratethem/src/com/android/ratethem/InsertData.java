@@ -469,25 +469,45 @@ public class InsertData extends Activity {
 		}
 	}
 
+	public void initRatingBar() {
+
+		ratingBar = (RatingBar) findViewById(R.id.ratingBar);
+
+		// if rating value is changed,
+		// display the current rating value in the result (textview)
+		// automatically
+		ratingBar.setOnRatingBarChangeListener(new OnRatingBarChangeListener() {
+			public void onRatingChanged(RatingBar ratingBar, float rating,
+					boolean fromUser) {
+
+				Toast.makeText(InsertData.this,
+						String.valueOf(ratingBar.getRating()),
+						Toast.LENGTH_SHORT).show();
+
+			}
+		});
+
+	}
+	
 	protected String sendFormToServer(){
-
+	
 		String url = "http://df.jafarnejad.org/discounts/post_discount/"; 
-
+	
 		try {
 			HttpClient httpclient = new DefaultHttpClient();
 			HttpPost httppost = new HttpPost(url);
 			//MultipartEntity reqEntity = new MultipartEntity();
 			MultipartEntityBuilder multipartEntity = MultipartEntityBuilder.create();
 			multipartEntity.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
-			multipartEntity.addTextBody("category", mItemCategory);
-			multipartEntity.addTextBody("item_name", mItemNameInfo);
-			multipartEntity.addTextBody("place_name", mPlaceInformation);
-			multipartEntity.addTextBody("rate", mRatings);
-			multipartEntity.addTextBody("location_txt", mLocationInformation);
-			multipartEntity.addTextBody("latitude", "567587");
-			multipartEntity.addTextBody("longitude", "657543");
-			multipartEntity.addTextBody("user_id", "test1");
-
+			multipartEntity.addTextBody(RateThemUtil.ITEM_CATEGORY, mItemCategory);
+			multipartEntity.addTextBody(RateThemUtil.ITEM_NAME, mItemNameInfo);
+			multipartEntity.addTextBody(RateThemUtil.ITEM_PLACE_NAME, mPlaceInformation);
+			multipartEntity.addTextBody(RateThemUtil.ITEM_RATING, mRatings);
+			multipartEntity.addTextBody(RateThemUtil.ITEM_LOC, mLocationInformation);
+			multipartEntity.addTextBody(RateThemUtil.ITEM_LATITUDE, "567587");
+			multipartEntity.addTextBody(RateThemUtil.ITEM_LONGITUDE, "657543");
+			multipartEntity.addTextBody(RateThemUtil.USER_ID, "test1");
+	
 			if(mCurrentPhotoPath != null){
 				//for image
 				//AssetManager assetManager = getAssets();
@@ -518,7 +538,7 @@ public class InsertData extends Activity {
 				Log.d(LOG_TAG,response.getStatusLine().toString());
 				return response.getStatusLine().toString();
 			}
-
+	
 		} catch (Exception e) {
 			Log.d(LOG_TAG,e.toString());
 			return e.toString();
@@ -526,27 +546,6 @@ public class InsertData extends Activity {
 		//Looper.loop();
 	}
 
-
-	public void initRatingBar() {
-
-		ratingBar = (RatingBar) findViewById(R.id.ratingBar);
-
-		// if rating value is changed,
-		// display the current rating value in the result (textview)
-		// automatically
-		ratingBar.setOnRatingBarChangeListener(new OnRatingBarChangeListener() {
-			public void onRatingChanged(RatingBar ratingBar, float rating,
-					boolean fromUser) {
-
-				Toast.makeText(InsertData.this,
-						String.valueOf(ratingBar.getRating()),
-						Toast.LENGTH_SHORT).show();
-
-			}
-		});
-
-	}
-	
 	// Uses AsyncTask to create a task away from the main UI thread. This task takes a 
 	// URL string and uses it to create an HttpUrlConnection. Once the connection
 	// has been established, the AsyncTask downloads the contents of the webpage as

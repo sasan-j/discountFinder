@@ -10,10 +10,14 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.mime.HttpMultipartMode;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import com.android.ratethem.util.RateThemUtil;
 
 /**
  * Class to retrieve information from server.
@@ -29,10 +33,75 @@ public class ServerGet {
 	public ServerGet() {
 	}
 
-	public JSONArray getJSONUrl(String url) {
+	public JSONArray getJSONQuery(String url,String _category) {
 		try {
 			DefaultHttpClient httpClient = new DefaultHttpClient();
 			HttpPost httpPost = new HttpPost(url);
+			MultipartEntityBuilder multipartEntity = MultipartEntityBuilder.create();
+			multipartEntity.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
+			multipartEntity.addTextBody(RateThemUtil.ITEM_CATEGORY, _category);
+			/*
+			multipartEntity.addTextBody("item_name", mItemNameInfo);
+			multipartEntity.addTextBody("place_name", mPlaceInformation);
+			multipartEntity.addTextBody("rate", mRatings);
+			multipartEntity.addTextBody("location_txt", mLocationInformation);
+			multipartEntity.addTextBody("latitude", "567587");
+			multipartEntity.addTextBody("longitude", "657543");
+			*/
+			httpPost.setEntity(multipartEntity.build());
+			HttpResponse httpResponse = httpClient.execute(httpPost);
+			HttpEntity httpEntity = httpResponse.getEntity();
+			mInStream = httpEntity.getContent();
+		} catch (ClientProtocolException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		try {
+			BufferedReader bufReader = new BufferedReader(
+					new InputStreamReader(mInStream, "UTF-8"));
+			StringBuilder sb = new StringBuilder();
+			String line = null;
+			while ((line = bufReader.readLine()) != null) {
+				sb.append(line + "\n");
+			}
+			mInStream.close();
+			mJson = sb.toString();
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		try {
+			mJsonArray = new JSONArray(mJson);
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return mJsonArray;
+	}
+	
+	public JSONArray getJSONItemDetails(String _item_id) {
+		try {
+			String url = RateThemUtil.SERVER_QUERY_URL;
+			DefaultHttpClient httpClient = new DefaultHttpClient();
+			HttpPost httpPost = new HttpPost(url);
+			MultipartEntityBuilder multipartEntity = MultipartEntityBuilder.create();
+			multipartEntity.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
+			multipartEntity.addTextBody(RateThemUtil.ITEM_ID, _item_id);
+			/*
+			multipartEntity.addTextBody("item_name", mItemNameInfo);
+			multipartEntity.addTextBody("place_name", mPlaceInformation);
+			multipartEntity.addTextBody("rate", mRatings);
+			multipartEntity.addTextBody("location_txt", mLocationInformation);
+			multipartEntity.addTextBody("latitude", "567587");
+			multipartEntity.addTextBody("longitude", "657543");
+			*/
+			httpPost.setEntity(multipartEntity.build());
 			HttpResponse httpResponse = httpClient.execute(httpPost);
 			HttpEntity httpEntity = httpResponse.getEntity();
 			mInStream = httpEntity.getContent();

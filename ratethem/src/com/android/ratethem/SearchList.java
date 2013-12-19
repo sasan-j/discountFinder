@@ -75,10 +75,10 @@ public class SearchList extends ListActivity {
 		mList = getListView();
 		mList.setOnItemClickListener(mItemListener);
 		// Retrieving from Database. Comment this when using Server.
-		getCursorFromDbToDisplay();
+		//getCursorFromDbToDisplay();
 		
 		// Server information retrieval and display. Uncomment when available.
-//		new GetHttpData().execute();
+		new GetHttpData().execute();
 	}
 	
 	private void getCursorFromDbToDisplay(){
@@ -103,11 +103,11 @@ public class SearchList extends ListActivity {
 		@Override
 		protected Void doInBackground(Void... arg0) {
 			ServerGet serGet = new ServerGet();
-			JSONArray jArray = serGet.getJSONUrl(RateThemUtil.SERVER_QUERY_URL);
+			JSONArray jArray = serGet.getJSONQuery(RateThemUtil.SERVER_QUERY_URL, mItemCategory);
 			try {
 			for(int i = 0; i < jArray.length(); i++){				
-					JSONObject itemName = jArray.getJSONObject(i);
-					list.add(new ItemInfo(itemName.getString(RateThemUtil.ITEM_NAME), itemName.getString(RateThemUtil.ITEM_RATING), itemName.getString(RateThemUtil.ITEM_PIC)));	
+					JSONObject jsonItem = jArray.getJSONObject(i);
+					list.add(new ItemInfo(jsonItem.getString(RateThemUtil.ITEM_NAME), jsonItem.getString(RateThemUtil.ITEM_RATING), jsonItem.getString(RateThemUtil.ITEM_PIC)));	
 			}
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
@@ -141,12 +141,14 @@ public class SearchList extends ListActivity {
 	}
 	
 	private void getInformationFromServer(int position){
+		
 		ServerGet serGet = new ServerGet();
-		JSONArray jArray = serGet.getJSONUrl(RateThemUtil.SERVER_QUERY_URL);
+		JSONArray jArray = serGet.getJSONItemDetails("23");
 		try {
 		for(int i = 0; i < jArray.length(); i++){				
 				JSONObject itemName = jArray.getJSONObject(i);
-				mPlaceName = itemName.getString(RateThemUtil.ITEM_NAME);
+				mItemName = itemName.getString(RateThemUtil.ITEM_NAME);
+				mPlaceName = itemName.getString(RateThemUtil.ITEM_PLACE_NAME);
 				mComments = itemName.getString(RateThemUtil.ITEM_COMMENT);
 				mLocation = itemName.getString(RateThemUtil.ITEM_LOC);
 				mPicPath = itemName.getString(RateThemUtil.ITEM_PIC);
@@ -165,9 +167,10 @@ public class SearchList extends ListActivity {
 		public void onItemClick(AdapterView<?> parent, View view, int position,
 				long id) {
 			// Comment this when server available.
-			getInformationFromCursor(position);
+			//getInformationFromCursor(position);
 			// Uncomment this when server available.
-//			getInformationFromServer(position);
+			//TODO: uncomment after list view works!
+			getInformationFromServer(position);
 			Intent intent = new Intent(SearchList.this, SearchItemView.class);
 			intent.putExtra(RateThemUtil.ITEM_NAME, mItemName);
 			intent.putExtra(RateThemUtil.ITEM_PLACE_NAME, mPlaceName);
@@ -199,16 +202,24 @@ public class SearchList extends ListActivity {
 			if(v == null){
 				LayoutInflater vi = LayoutInflater.from(getContext());
 				v = vi.inflate(R.layout.rowlayout, null);
-				icon = (ImageView) view.findViewById(R.id.pic);
-				itemInfo = (TextView) view.findViewById(R.id.loc_info);
-				rate = (RatingBar) view.findViewById(R.id.ratingBar);
+				icon = (ImageView) v.findViewById(R.id.pic);
+				itemInfo = (TextView) v.findViewById(R.id.loc_info);
+				rate = (RatingBar) v.findViewById(R.id.ratingBar);
+				//TODO: change number of stars to a global variable
 				rate.setNumStars(5);
 			}
 			
 			ItemInfo item = mItems.get(position);
 			if(item != null){
 				String picPath = item.getPicture();
-				icon.setImageBitmap(BitmapFactory.decodeFile(picPath));
+				if (picPath != null && picPath.length()>1) {
+				    Drawable d = getResources().getDrawable(R.drawable.no_image);
+				    //Log.d("ratethem", "heigh is : "+(d.getIntrinsicHeight()));
+				    /* Decode the JPEG file into a Bitmap */
+					Bitmap mImageBitmap = BitmapFactory.decodeFile(picPath);
+					icon.setImageBitmap(Bitmap.createScaledBitmap(mImageBitmap, d.getIntrinsicWidth(), d.getIntrinsicHeight(), false));
+				}
+				//icon.setImageBitmap(BitmapFactory.decodeFile(picPath));
 				itemInfo.setText(item.getName());
 				rate.setRating(Float.parseFloat(item.getRating()));
 			}
@@ -228,7 +239,7 @@ public class SearchList extends ListActivity {
 			ImageView icon = (ImageView) view.findViewById(R.id.pic);
 			String picPath = cursor.getString(cursor
 					.getColumnIndex(RateAgent.RateProvider.ITEM_PIC));
-			if (picPath != null) {
+			if (picPath != null && picPath.length()>1) {
 			    Drawable d = getResources().getDrawable(R.drawable.no_image);
 			    //Log.d("ratethem", "heigh is : "+(d.getIntrinsicHeight()));
 			    /* Decode the JPEG file into a Bitmap */
