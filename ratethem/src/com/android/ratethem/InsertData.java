@@ -57,7 +57,6 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -75,6 +74,7 @@ public class InsertData extends Activity {
 	private RatingBar ratingBar;
 	private File mImageFile = null;
 	private String mItemName = null;
+	private String mItemCategory = null;
 
 	//for image capturing
 	private static final int ACTION_CAPTURE_IMAGE = 1;
@@ -98,9 +98,15 @@ public class InsertData extends Activity {
 	Uri imageUri = null;
 	static TextView imageDetails = null;
 	//private ImageView mImage;
+	private EditText mItemNameEdit;
 	private EditText mPlaceEdit;
 	private EditText mLocationEdit;
 	private EditText mViewsEdit;
+	
+	private String mItemNameInfo = null;
+	private String mPlaceInformation = null;
+	private String mLocationInformation = null;
+
 	private String mLatitude = null;
 	private String mLongitude = null;
 	InsertData CameraActivity = null;
@@ -108,9 +114,7 @@ public class InsertData extends Activity {
 	private String mCriteria = null;
 	private String mSearch = null;
 	private String mPublish = null;
-	private String mPlaceInformation = null;
 	private String mRatings = null;
-	private String mLocationInformation = null;
 	private String mYourViews = null;
 
 
@@ -326,14 +330,18 @@ public class InsertData extends Activity {
 		// Get the extras from calling activity.
 		Bundle extras = getIntent().getExtras();
 		if (extras != null) {
-			mItemName = extras.getString(RateThemUtil.ITEM_NAME);
+			//mItemName = extras.getString(RateThemUtil.ITEM_NAME);
+			mItemCategory = extras.getString(RateThemUtil.ITEM_CATEGORY);
 			mCriteria = extras.getString(RateThemUtil.CRITERIA);
 		}
 		Log.d(LOG_TAG, "Criteria sent: " + mCriteria);
 		mImageView = (ImageView) findViewById(R.id.showImg);
+		
+		mItemNameEdit = (EditText) findViewById(R.id.item_name);
 		mPlaceEdit = (EditText) findViewById(R.id.place_name);
 		mLocationEdit = (EditText) findViewById(R.id.location);
 		mViewsEdit = (EditText) findViewById(R.id.your_view);
+		
 		mSearch = getString(R.string.search);
 		mPublish = getString(R.string.publish);
 		Log.d(LOG_TAG, "Strings for Search and publish: " + mSearch + " : "
@@ -408,6 +416,8 @@ public class InsertData extends Activity {
 	 * Push information to either database or server.
 	 */
 	private void insertInformation(View v) {
+		
+		mItemNameInfo = mItemNameEdit.getText().toString();
 		mPlaceInformation = mPlaceEdit.getText().toString();
 		mLocationInformation = mLocationEdit.getText().toString();
 		mYourViews = mViewsEdit.getText().toString();
@@ -419,8 +429,8 @@ public class InsertData extends Activity {
 			mYourViews = getString(R.string.no_info);
 		} else if (mRatings == null) {
 			mRatings = "0";
-		} else if (mItemName == null) {
-			mItemName = getString(R.string.no_info);
+		} else if (mItemNameInfo == null) {
+			mItemNameInfo = getString(R.string.no_info);
 		}
 		// Below code inserts into database currently. Must be commented
 		// when server contact is established.
@@ -440,7 +450,8 @@ public class InsertData extends Activity {
 	private void insertToDb() {
 		try {
 			ContentValues cv = new ContentValues();
-			cv.put(RateAgent.RateProvider.ITEM_NAME, mItemName);
+			cv.put(RateAgent.RateProvider.ITEM_NAME, mItemNameInfo);
+			cv.put(RateAgent.RateProvider.ITEM_CATEGORY, mItemCategory);
 			cv.put(RateAgent.RateProvider.ITEM_PLACE_NAME, mPlaceInformation);
 			cv.put(RateAgent.RateProvider.ITEM_PIC, mCurrentPhotoPath);
 			cv.put(RateAgent.RateProvider.ITEM_RATING, mRatings);
@@ -467,17 +478,9 @@ public class InsertData extends Activity {
 			HttpPost httppost = new HttpPost(url);
 			//MultipartEntity reqEntity = new MultipartEntity();
 			MultipartEntityBuilder multipartEntity = MultipartEntityBuilder.create();
-
-			/*
-			String in = item_name.getText().toString();
-			String r = rate.getText().toString();
-			String lt = location_txt.getText().toString();
-			String la = latitude.getText().toString();
-			String lo = longitude.getText().toString();
-			String id = user_id.getText().toString();
-			 */
 			multipartEntity.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
-			multipartEntity.addTextBody("item_name", mItemName);
+			multipartEntity.addTextBody("category", mItemCategory);
+			multipartEntity.addTextBody("item_name", mItemNameInfo);
 			multipartEntity.addTextBody("place_name", mPlaceInformation);
 			multipartEntity.addTextBody("rate", mRatings);
 			multipartEntity.addTextBody("location_txt", mLocationInformation);
