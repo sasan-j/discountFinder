@@ -29,27 +29,28 @@ class Discounts extends CI_Controller {
 
 		var_dump($this->input->post());
 		
+		//random filename generator
+		//$filename = substr(md5(mt_rand()), 0, 15)+".jpg";
+
 		$config['upload_path'] = './uploads/';
 		//$config['allowed_types'] = 'gif|jpg|png|txt';
-		$config['max_size']	= '100';
-		$config['max_width']  = '1024';
-		$config['max_height']  = '768';
+		$config['max_size']	= '100000';
+		$config['max_width']  = '8096';
+		$config['max_height']  = '8096';
 		$config['allowed_types'] = '*';
+		//$config['file_name'] = $filename;
 
 		$this->load->library('upload', $config);
-		if (! $this->upload->do_upload('userfile')) {
-        		$data['error'] = array('error' => $this->upload->display_errors());
-    		}
-
-    		else {
-        		$data = array('upload_data' => $this->upload->data());	
-        	}	
+		
+		$this->upload->do_upload();
+                //$upload_data = $this->upload->data();file_name
+	
 		// define variables and set to empty values
 		$item_name = $rate = $location_txt = $latitude = $longitude = $user_id = "";
 		
 		if ($_SERVER["REQUEST_METHOD"] == "POST")
 		{
-			$result = $this->discounts_model->save_discount();
+			$result = $this->discounts_model->save_discount_data();
 		}
 		else echo "No post";
 
@@ -59,7 +60,16 @@ class Discounts extends CI_Controller {
 
 		//var_dump($_FILES);
 		//var_dump($_POST);
-		
-		
 	}
+	
+	
+		public function get_discount()
+	{
+		$result = $this->discounts_model->load_discount_data();
+		$json_results=json_encode($result);
+		//var_dump($json_results);	
+		echo $json_results;
+	}
+	
+	
 }

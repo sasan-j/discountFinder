@@ -492,6 +492,8 @@ public class InsertData extends Activity {
 			multipartEntity.addTextBody(RateThemUtil.ITEM_LATITUDE, "567587");
 			multipartEntity.addTextBody(RateThemUtil.ITEM_LONGITUDE, "657543");
 			multipartEntity.addTextBody(RateThemUtil.USER_ID, "test1");
+			multipartEntity.addTextBody(RateThemUtil.ITEM_COMMENT, mYourViews);
+
 	
 			if(mCurrentPhotoPath != null){
 				mImageFile = new File(mCurrentPhotoPath);

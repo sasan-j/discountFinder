@@ -18,3 +18,22 @@
 [12-Dec-2013 22:45:56 Asia/Tehran] PHP Parse error:  syntax error, unexpected T_PUBLIC in /home/jafarnej/public_html/discountFinder/application/models/discounts_model.php on line 22
 [12-Dec-2013 22:47:41 Asia/Tehran] PHP Parse error:  syntax error, unexpected T_PUBLIC in /home/jafarnej/public_html/discountFinder/application/models/discounts_model.php on line 23
 [12-Dec-2013 22:48:05 Asia/Tehran] PHP Parse error:  syntax error, unexpected T_PUBLIC in /home/jafarnej/public_html/discountFinder/application/models/discounts_model.php on line 23
+[19-Dec-2013 04:04:10 Asia/Tehran] PHP Fatal error:  Call to a member function result_array() on a non-object in /home/jafarnej/public_html/discountFinder/application/models/discounts_model.php on line 42
+[19-Dec-2013 04:04:13 Asia/Tehran] PHP Fatal error:  Call to a member function result_array() on a non-object in /home/jafarnej/public_html/discountFinder/application/models/discounts_model.php on line 42
+[19-Dec-2013 04:04:44 Asia/Tehran] PHP Fatal error:  Call to a member function result_array() on a non-object in /home/jafarnej/public_html/discountFinder/application/models/discounts_model.php on line 42
+[19-Dec-2013 04:04:46 Asia/Tehran] PHP Fatal error:  Call to a member function result_array() on a non-object in /home/jafarnej/public_html/discountFinder/application/models/discounts_model.php on line 42
+[19-Dec-2013 04:05:08 Asia/Tehran] PHP Fatal error:  Call to a member function result_array() on a non-object in /home/jafarnej/public_html/discountFinder/application/models/discounts_model.php on line 42
+[19-Dec-2013 04:05:10 Asia/Tehran] PHP Fatal error:  Call to a member function result_array() on a non-object in /home/jafarnej/public_html/discountFinder/application/models/discounts_model.php on line 42
+[19-Dec-2013 04:05:10 Asia/Tehran] PHP Fatal error:  Call to a member function result_array() on a non-object in /home/jafarnej/public_html/discountFinder/application/models/discounts_model.php on line 42
+[19-Dec-2013 04:05:11 Asia/Tehran] PHP Fatal error:  Call to a member function result_array() on a non-object in /home/jafarnej/public_html/discountFinder/application/models/discounts_model.php on line 42
+[19-Dec-2013 04:05:11 Asia/Tehran] PHP Fatal error:  Call to a member function result_array() on a non-object in /home/jafarnej/public_html/discountFinder/application/models/discounts_model.php on line 42
+[19-Dec-2013 04:05:11 Asia/Tehran] PHP Fatal error:  Call to a member function result_array() on a non-object in /home/jafarnej/public_html/discountFinder/application/models/discounts_model.php on line 42
+[19-Dec-2013 04:05:11 Asia/Tehran] PHP Fatal error:  Call to a member function result_array() on a non-object in /home/jafarnej/public_html/discountFinder/application/models/discounts_model.php on line 42
+[19-Dec-2013 04:07:29 Asia/Tehran] PHP Fatal error:  Call to a member function result_array() on a non-object in /home/jafarnej/public_html/discountFinder/application/models/discounts_model.php on line 42
+[19-Dec-2013 04:07:31 Asia/Tehran] PHP Fatal error:  Call to a member function result_array() on a non-object in /home/jafarnej/public_html/discountFinder/application/models/discounts_model.php on line 42
+[19-Dec-2013 04:08:09 Asia/Tehran] PHP Fatal error:  Call to a member function result_array() on a non-object in /home/jafarnej/public_html/discountFinder/application/models/discounts_model.php on line 41
+[19-Dec-2013 04:11:32 Asia/Tehran] PHP Fatal error:  Call to a member function result() on a non-object in /home/jafarnej/public_html/discountFinder/application/models/discounts_model.php on line 42
+[19-Dec-2013 04:11:35 Asia/Tehran] PHP Fatal error:  Call to a member function result() on a non-object in /home/jafarnej/public_html/discountFinder/application/models/discounts_model.php on line 42
+[19-Dec-2013 04:11:57 Asia/Tehran] PHP Fatal error:  Call to a member function result() on a non-object in /home/jafarnej/public_html/discountFinder/application/models/discounts_model.php on line 43
+[19-Dec-2013 04:11:59 Asia/Tehran] PHP Fatal error:  Call to a member function result() on a non-object in /home/jafarnej/public_html/discountFinder/application/models/discounts_model.php on line 43
+[19-Dec-2013 07:36:01 Asia/Tehran] PHP Fatal error:  Call to a member function result() on a non-object in /home/jafarnej/public_html/discountFinder/application/models/discounts_model.php on line 48
