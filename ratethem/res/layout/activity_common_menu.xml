@@ -14,7 +14,7 @@
         android:text="  Click on the categories to rate"/>
 
     <TableLayout
-        android:layout_width="150dp"
+        android:layout_width="158dp"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:orientation="vertical" >
@@ -27,30 +27,14 @@
             <Button
                 android:id="@+id/Clothing"
                 style="?android:attr/buttonStyleSmall"
-                android:layout_width="100dp"
-                android:layout_height="40dp"
+                android:layout_width="158dp"
+                android:layout_height="48dp"
                 android:layout_marginTop="50dp"
                 android:layout_weight="0.00"
                 android:background="@drawable/clothes" />
 
         </TableRow>
-
-        <TableRow
-            android:id="@+id/tableRow2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" >
-
-            <Button
-                android:id="@+id/HomeCare"
-                style="?android:attr/buttonStyleSmall"
-                android:layout_width="100dp"
-                android:layout_height="50dp"
-                android:layout_marginTop="50dp"
-                android:layout_weight="0.01"
-                android:background="@drawable/homecare" />
-
-        </TableRow>
-
+        
         <TableRow
             android:id="@+id/tableRow3"
             android:layout_width="wrap_content"
@@ -59,10 +43,25 @@
             <Button
                 android:id="@+id/Food"
                 style="?android:attr/buttonStyleSmall"
-                android:layout_width="100dp"
-                android:layout_height="50dp"
-                android:layout_marginTop="42dp"
+                android:layout_width="158dp"
+                android:layout_height="48dp"
+                android:layout_marginTop="48dp"
                 android:background="@drawable/food" />
+
+        </TableRow>
+        <TableRow
+            android:id="@+id/tableRow2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+            <Button
+                android:id="@+id/HomeCare"
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="158dp"
+                android:layout_height="48dp"
+                android:layout_marginTop="50dp"
+                android:layout_weight="0.01"
+                android:background="@drawable/homecare" />
 
         </TableRow>
 
@@ -74,8 +73,8 @@
             <Button
                 android:id="@+id/Electronics"
                 style="?android:attr/buttonStyleSmall"
-                android:layout_width="100dp"
-                android:layout_height="50dp"
+                android:layout_width="158dp"
+                android:layout_height="48dp"
                 android:layout_marginTop="50dp"
                 android:background="@drawable/technology" />
 

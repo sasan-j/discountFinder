@@ -48,8 +48,8 @@ public final class R {
         public static final int DiscPlaceLbl=0x7f0a001e;
         public static final int Done=0x7f0a000c;
         public static final int Electronics=0x7f0a0008;
-        public static final int Food=0x7f0a0006;
-        public static final int HomeCare=0x7f0a0004;
+        public static final int Food=0x7f0a0004;
+        public static final int HomeCare=0x7f0a0006;
         public static final int Publish=0x7f0a0010;
         public static final int Search=0x7f0a0011;
         public static final int TakePic=0x7f0a000d;
@@ -73,8 +73,8 @@ public final class R {
         public static final int search_text1=0x7f0a0012;
         public static final int showImg=0x7f0a000e;
         public static final int tableRow1=0x7f0a0001;
-        public static final int tableRow2=0x7f0a0003;
-        public static final int tableRow3=0x7f0a0005;
+        public static final int tableRow2=0x7f0a0005;
+        public static final int tableRow3=0x7f0a0003;
         public static final int tableRow4=0x7f0a0007;
         public static final int userOpinion=0x7f0a001d;
         public static final int userOpinionLbl=0x7f0a001b;
