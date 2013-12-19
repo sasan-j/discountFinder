@@ -27,7 +27,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/place_name"
-        android:layout_alignRight="@+id/ratingBar"
         android:layout_below="@+id/place_name"
         android:ems="10"
         android:hint="Shop Location"
@@ -90,7 +89,14 @@
         android:layout_marginRight="0dp"
         android:layout_marginTop="20dp"
         android:src="@drawable/no_image" />
-
+    <ImageButton
+        android:id="@+id/LocationLogo"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_alignTop="@+id/location"
+        android:layout_toRightOf="@+id/location"
+        android:background="@drawable/location_off" />
     <RatingBar
         android:id="@+id/ratingBar"
         android:layout_width="285dp"
