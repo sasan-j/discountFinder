@@ -73,8 +73,8 @@ public final class R {
         public static final int search_text1=0x7f0a0012;
         public static final int showImg=0x7f0a000e;
         public static final int tableRow1=0x7f0a0001;
-        public static final int tableRow2=0x7f0a0005;
-        public static final int tableRow3=0x7f0a0003;
+        public static final int tableRow2=0x7f0a0003;
+        public static final int tableRow3=0x7f0a0005;
         public static final int tableRow4=0x7f0a0007;
         public static final int userOpinion=0x7f0a001d;
         public static final int userOpinionLbl=0x7f0a001b;
@@ -98,6 +98,7 @@ public final class R {
         public static final int album_name=0x7f06000e;
         public static final int app_name=0x7f060000;
         public static final int cannot=0x7f06000f;
+        public static final int categories_msg=0x7f060011;
         public static final int current_location=0x7f06000d;
         public static final int done=0x7f060004;
         public static final int hello_world=0x7f060002;

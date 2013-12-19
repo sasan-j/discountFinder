@@ -13,10 +13,10 @@
         style="?android:attr/buttonStyleSmall"
         android:layout_width="158dp"
         android:layout_height="48dp"
-         android:layout_marginTop="20dp"
         android:layout_above="@+id/Search"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="29dp"
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="20dp"
         android:background="@drawable/post_disc" />
 
     <Button
@@ -24,9 +24,10 @@
         style="?android:attr/buttonStyleSmall"
         android:layout_width="158dp"
         android:layout_height="48dp"
-        android:layout_marginTop="50dp"
+       android:layout_centerInParent="true"
         android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
+        
+        android:layout_marginTop="48dp"
         android:background="@drawable/search_disc" />
 
 </RelativeLayout>

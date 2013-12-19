@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+ <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+<RelativeLayout 
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="fill"
-    android:orientation="vertical" >
+    android:orientation="vertical">
 
 
     <EditText
@@ -31,11 +35,11 @@
     <ImageButton
         android:id="@+id/Done"
         style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:layout_alignTop="@+id/location"
         android:layout_marginLeft="21dp"
-        android:layout_toRightOf="@+id/location"
+        android:layout_toRightOf="@+id/your_view"
         android:src="@drawable/done" />
 
     <ImageButton
@@ -80,5 +84,6 @@
         android:layout_marginTop="11dp"
         android:numStars="5"
         android:stepSize="0.5" />
+    </RelativeLayout>
+</ScrollView>
 
-</RelativeLayout>
