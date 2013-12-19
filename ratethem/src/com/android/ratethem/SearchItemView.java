@@ -35,7 +35,7 @@ public class SearchItemView extends Activity {
     private TextView discTitle;
     private TextView discPlace;
     private TextView discLocation;
-    private TextView userView;;
+    private TextView userView;
     
     private String mItemName = null;
     private TextView mPlaceInfo;
@@ -191,8 +191,8 @@ public class SearchItemView extends Activity {
 	discTitle.setText(mItemName);
     discPlace.setText(mPlaceName);
     discLocation.setText(mLocation);
-    //discRating
-    //userView.setText(mComments);
+    discRatingBar.setRating(Float.parseFloat(mRatings));
+    userView.setText(mItemUserViews);
 	}
 
 }

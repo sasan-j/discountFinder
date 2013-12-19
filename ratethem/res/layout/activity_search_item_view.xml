@@ -43,7 +43,7 @@
         
         <TextView
         android:id="@+id/DiscPlace"
-        android:layout_below="@+id/ratingBar2"
+        android:layout_below="@+id/DiscPlaceLbl"
         android:layout_marginTop="10dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -54,7 +54,7 @@
         
         <TextView
         android:id="@+id/DiscPlaceLbl"
-        android:layout_below="@+id/DiscPlace"
+        android:layout_below="@+id/ratingBar2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
