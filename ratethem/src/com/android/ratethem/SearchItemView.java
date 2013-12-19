@@ -6,6 +6,7 @@ import org.json.JSONObject;
 
 import com.android.ratethem.server.ServerGet;
 import com.android.ratethem.util.*;
+import com.androidquery.AQuery;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -19,6 +20,7 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.support.v4.app.NavUtils;
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
@@ -27,6 +29,7 @@ import android.os.Build;
 public class SearchItemView extends Activity {
 
 
+	private RatingBar discRatingBar;
     //image holder
     private ImageView discImage;
     private TextView discTitle;
@@ -49,6 +52,9 @@ public class SearchItemView extends Activity {
     private String mLocLatitude = null;
     private String mLocLongitude = null;
     private String mPicPath = null;
+    private String mItemUserViews = null;
+	private String mItemImageUrl = null;
+
     
     
     private String mCriteria = null;
@@ -65,24 +71,30 @@ public class SearchItemView extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_search_item_view);
 		
+	    Context mContext = getApplicationContext();
+
+		
 		// Get the extras from calling activity.
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             mItemID = extras.getString(RateThemUtil.ITEM_ID);
             mItemName = extras.getString(RateThemUtil.ITEM_NAME);
             mCriteria = extras.getString(RateThemUtil.CRITERIA);
-        }
-        String discPlaceTxt = extras.getString(RateThemUtil.ITEM_PLACE_NAME);
-        String discLocationTxt = extras.getString(RateThemUtil.ITEM_LOC);
-        String discRating = extras.getString(RateThemUtil.ITEM_RATING);
-        String userViewTxt = extras.getString(RateThemUtil.ITEM_COMMENT);
-        String discImagePath = extras.getString(RateThemUtil.ITEM_PIC);
-        
+
+	        mPlaceName = extras.getString(RateThemUtil.ITEM_PLACE_NAME);
+	        mLocation = extras.getString(RateThemUtil.ITEM_LOC);
+	        mRatings = extras.getString(RateThemUtil.ITEM_RATING);
+	        mItemUserViews = extras.getString(RateThemUtil.ITEM_COMMENT);
+	    	mItemImageUrl = extras.getString(RateThemUtil.ITEM_PIC);
+        }     
         //getting details
 		//new GetItemDetailsServer().execute();
         
-        //RatingBar discRating = (RatingBar) findViewById(R.id.ratingBar);
 		discImage = (ImageView) findViewById(R.id.discImage);
+		
+        discRatingBar = (RatingBar) findViewById(R.id.ratingBar2);
+        discRatingBar.setNumStars(RateThemUtil.NO_STARS);
+        
 		discTitle = (TextView) findViewById(R.id.discTitle);
 		discPlace = (TextView) findViewById(R.id.DiscPlace);
 		discLocation = (TextView) findViewById(R.id.discLocation);
@@ -90,17 +102,31 @@ public class SearchItemView extends Activity {
 		
 		
 		discTitle.setText(mItemName);
-        discPlace.setText(discPlaceTxt);
-        discLocation.setText(discLocationTxt);
-        //discRating
-        userView.setText(userViewTxt);
+        discPlace.setText(mPlaceName);
+        discLocation.setText(mLocation);
+        discRatingBar.setRating(Float.parseFloat(mRatings));
+        userView.setText(mItemUserViews);
+        
+        
+		//preset image
+		Bitmap presetImage = BitmapFactory.decodeResource(mContext.getResources(),
+                R.drawable.no_image);
+					
+		//load an image to an ImageView from network, cache image to file and memory
+	    AQuery aq = new AQuery(this);
+		if(mItemImageUrl != null && mItemImageUrl.length()>1){
+		    Drawable d = getResources().getDrawable(R.drawable.no_image);
+			aq.id(discImage).image(mItemImageUrl, true, true, d.getIntrinsicWidth()*2, 0, presetImage, AQuery.FADE_IN_NETWORK, AQuery.RATIO_PRESERVE);
+		}
+			
+		/*	
         if(discImagePath!=null && discImagePath.length()>1){
     		Bitmap mImageBitmap = BitmapFactory.decodeFile(discImagePath);
     		//discImage.setImageBitmap(Bitmap.createScaledBitmap(mImageBitmap, discImage.getWidth(), discImage.getHeight(), false));
     	    Drawable d = getResources().getDrawable(R.drawable.no_image);
     	    discImage.setImageBitmap(Bitmap.createScaledBitmap(mImageBitmap, d.getIntrinsicWidth(), d.getIntrinsicHeight(), false));
         }
-
+		*/
 		// Show the Up button in the action bar.
 		//setupActionBar();
         

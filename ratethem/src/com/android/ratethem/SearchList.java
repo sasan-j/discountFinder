@@ -35,6 +35,8 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.androidquery.*;
+
 /**
  * ListActivity to display all information retrieved from server or database.
  */
@@ -55,6 +57,9 @@ public class SearchList extends ListActivity {
 	private String mLocLatitude = null;
 	private String mLocLongitude = null;
 	private String mItemID = null;
+	private String mItemImageUrl = null;
+	private String mItemLocalImagePath = null;
+
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -100,17 +105,24 @@ public class SearchList extends ListActivity {
 			try {
 			for(int i = 0; i < jArray.length(); i++){				
 					JSONObject jsonItem = jArray.getJSONObject(i);
+					String imageName = jsonItem.getString(RateThemUtil.ITEM_PIC);
+					String imageUrl = null;
+					if(imageName != null && imageName.length()>1) 
+						imageUrl=RateThemUtil.IMAGE_UPLOAD_DIR_PREFIX+imageName;
 					list.add(new ItemInfo(
 							jsonItem.getString(RateThemUtil.ITEM_ID),
 							jsonItem.getString(RateThemUtil.ITEM_NAME), 
 							jsonItem.getString(RateThemUtil.ITEM_CATEGORY), 
 							jsonItem.getString(RateThemUtil.ITEM_PLACE_NAME), 
 							jsonItem.getString(RateThemUtil.ITEM_RATING), 
-							jsonItem.getString(RateThemUtil.ITEM_PIC), 
+							imageUrl, /*Somehow obsolete field kept for compatibility*/
+							//jsonItem.getString(RateThemUtil.ITEM_PIC)
 							jsonItem.getString(RateThemUtil.ITEM_LOC), 
 							jsonItem.getString(RateThemUtil.ITEM_LATITUDE), 
 							jsonItem.getString(RateThemUtil.ITEM_LONGITUDE), 
-							jsonItem.getString(RateThemUtil.ITEM_COMMENT)));	
+							jsonItem.getString(RateThemUtil.ITEM_COMMENT),
+							imageUrl,	/*Image URL*/
+							null));	/*Local Image Path*/
 			}
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
@@ -123,7 +135,6 @@ public class SearchList extends ListActivity {
 		protected void onPostExecute(Void result){
 			setListAdapter(new ListAdapter(SearchList.this, R.layout.activity_data_list, list));
 		}
-		
 	}
 	
 	private void getInformationFromCursor(int position){
@@ -206,7 +217,7 @@ public class SearchList extends ListActivity {
 			intent.putExtra(RateThemUtil.ITEM_LOC, mLocation);
 			intent.putExtra(RateThemUtil.ITEM_LATITUDE, mLocLatitude);
 			intent.putExtra(RateThemUtil.ITEM_LONGITUDE, mLocLongitude);
-			intent.putExtra(RateThemUtil.ITEM_PIC, mPicPath);
+			intent.putExtra(RateThemUtil.ITEM_PIC, mItemImageUrl);
 			intent.putExtra(RateThemUtil.ITEM_COMMENT, mComments);
 			intent.putExtra(RateThemUtil.ITEM_RATING, mRating);
 			//intent.putExtra(RateThemUtil.CRITERIA, mCriteria);
@@ -225,6 +236,8 @@ public class SearchList extends ListActivity {
 		mPicPath = _itemInfo.getmPicPath();
 		mComments = _itemInfo.getmComments();
 		mRating = _itemInfo.getmRating();
+		mItemImageUrl = _itemInfo.getmPicPath();
+
 	}
 	
 	private class ListAdapter extends ArrayAdapter<ItemInfo>{
@@ -250,18 +263,31 @@ public class SearchList extends ListActivity {
 				itemInfo = (TextView) v.findViewById(R.id.loc_info);
 				rate = (RatingBar) v.findViewById(R.id.ratingBar);
 				//TODO: change number of stars to a global variable
-				rate.setNumStars(5);
+				rate.setNumStars(RateThemUtil.NO_STARS);
 			}
+			
+			//preset image
+			Bitmap presetImage = BitmapFactory.decodeResource(getContext().getResources(),
+                    R.drawable.no_image);
 			
 			ItemInfo item = mItems.get(position);
 			if(item != null){
 				String picPath = item.getmPicPath();
+				/*
 				if (picPath != null && picPath.length()>1) {
 				    Drawable d = getResources().getDrawable(R.drawable.no_image);
 				    //Log.d("ratethem", "heigh is : "+(d.getIntrinsicHeight()));
-				    /* Decode the JPEG file into a Bitmap */
+				    /* Decode the JPEG file into a Bitmap *//*
 					Bitmap mImageBitmap = BitmapFactory.decodeFile(picPath);
 					icon.setImageBitmap(Bitmap.createScaledBitmap(mImageBitmap, d.getIntrinsicWidth(), d.getIntrinsicHeight(), false));
+				}*/
+				
+				//load an image to an ImageView from network, cache image to file and memory
+				String picUrl = item.getmImageUrl();
+		        AQuery aq = new AQuery(view);
+				if(picUrl != null && picUrl.length()>1){
+				    Drawable d = getResources().getDrawable(R.drawable.no_image);
+					aq.id(icon).image(picUrl, true, true, d.getIntrinsicWidth()/2, 0, presetImage, AQuery.FADE_IN_NETWORK, AQuery.RATIO_PRESERVE);
 				}
 				//icon.setImageBitmap(BitmapFactory.decodeFile(picPath));
 				itemInfo.setText(item.getmItemName());
@@ -293,7 +319,7 @@ public class SearchList extends ListActivity {
 			
 			TextView locInfo = (TextView) view.findViewById(R.id.loc_info);
 			RatingBar rate = (RatingBar) view.findViewById(R.id.ratingBar);
-			rate.setNumStars(5);
+			rate.setNumStars(RateThemUtil.NO_STARS);
 
 			locInfo.setText(cursor.getString(cursor
 					.getColumnIndex(RateAgent.RateProvider.ITEM_NAME)));

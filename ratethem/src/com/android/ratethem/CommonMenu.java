@@ -1,6 +1,5 @@
 package com.android.ratethem;
 
-//import com.android.ratethem.R;
 import com.android.ratethem.util.RateThemUtil;
 
 import android.app.Activity;

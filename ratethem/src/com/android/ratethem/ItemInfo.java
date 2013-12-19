@@ -17,6 +17,8 @@ public class ItemInfo {
 	private String mLocLatitude = null;
 	private String mLocLongitude = null;
 	private String mComments = null;
+	private String mImageUrl = null;
+	private String mLocalImagePath = null;
 
 	
 
@@ -24,7 +26,7 @@ public class ItemInfo {
 	public ItemInfo(String mItemID, String mItemName, String mItemCategory,
 			String mPlaceName, String mRating, String mPicPath,
 			String mLocation, String mLocLatitude, String mLocLongitude,
-			String mComments) {
+			String mComments, String mImageUrl, String mLocalImagePath) {
 		super();
 		this.mItemID = mItemID;
 		this.mItemName = mItemName;
@@ -36,7 +38,42 @@ public class ItemInfo {
 		this.mLocLatitude = mLocLatitude;
 		this.mLocLongitude = mLocLongitude;
 		this.mComments = mComments;
+		this.mImageUrl = mImageUrl;
+		this.mLocalImagePath = mLocalImagePath;
 	}
+	
+
+
+
+
+	public String getmImageUrl() {
+		return mImageUrl;
+	}
+
+
+
+
+
+	public void setmImageUrl(String mImageUrl) {
+		this.mImageUrl = mImageUrl;
+	}
+
+
+
+
+
+	public String getmLocalImagePath() {
+		return mLocalImagePath;
+	}
+
+
+
+
+
+	public void setmLocalImagePath(String mLocalImagePath) {
+		this.mLocalImagePath = mLocalImagePath;
+	}
+
 
 
 

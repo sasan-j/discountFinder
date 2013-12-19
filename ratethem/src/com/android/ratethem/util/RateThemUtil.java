@@ -9,7 +9,10 @@ public class RateThemUtil {
 	//public static final String SERVER_URL = "/localhost/8081";
 	public static final String SERVER_QUERY_URL = "http://df.jafarnejad.org/discounts/get_discount/";
 	public static final String SERVER_POST_URL = "http://df.jafarnejad.org/discounts/post_discount/";
+	public static final String IMAGE_UPLOAD_DIR_PREFIX = "http://df.jafarnejad.org/uploads/";
 
+	
+	public static final int NO_STARS = 5; 
 	
 	public static final String CRITERIA = "criteria";
 	

@@ -23,8 +23,10 @@
 
     <ImageView
         android:id="@+id/discImage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:scaleType="centerCrop"
+        android:adjustViewBounds="true"
+        android:layout_width="192dp"
+        android:layout_height="256dp"
         android:layout_below="@+id/discTitle"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="21dp"
@@ -32,9 +34,10 @@
     
         <RatingBar
         android:id="@+id/ratingBar2"
-        android:layout_width="fill_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/discImage"
+        android:layout_centerHorizontal="true"
         android:numStars="5"
         android:stepSize="0.5" />
         
