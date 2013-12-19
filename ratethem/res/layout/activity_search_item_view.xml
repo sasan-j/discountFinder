@@ -17,7 +17,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="18dp"
+        android:layout_marginTop="10dp"
         android:text="Discount Title"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
@@ -29,22 +29,24 @@
         android:layout_height="256dp"
         android:layout_below="@+id/discTitle"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="21dp"
+        android:layout_marginTop="15dp"
         android:src="@drawable/no_image" />
     
         <RatingBar
         android:id="@+id/ratingBar2"
+        android:isIndicator="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/discImage"
         android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
         android:numStars="5"
         android:stepSize="0.5" />
         
         <TextView
         android:id="@+id/DiscPlace"
         android:layout_below="@+id/DiscPlaceLbl"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="5dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
@@ -54,6 +56,7 @@
         
         <TextView
         android:id="@+id/DiscPlaceLbl"
+        android:textColor="#858585"
         android:layout_below="@+id/ratingBar2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -65,10 +68,11 @@
     <TextView
         android:id="@+id/discLocationLbl"
         android:layout_width="wrap_content"
+        android:textColor="#858585"
         android:layout_height="wrap_content"
         android:layout_below="@+id/DiscPlace"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="28dp"
+        android:layout_marginTop="20dp"
         android:text="Where exactly?" />
     
     <TextView
@@ -77,19 +81,21 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/discLocationLbl"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="5dp"
         android:text="Address"
         android:textAppearance="?android:attr/textAppearanceMedium" />
     
     <TextView
         android:id="@+id/userOpinionLbl"
+        android:textColor="#858585"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/discLocation"
-        android:layout_marginTop="27dp"
-        android:layout_toLeftOf="@+id/discImage"
+        android:layout_marginTop="20dp"
+        
         android:text="User&apos;s Opinion:"
-        android:textAppearance="?android:attr/textAppearanceSmall" />
+        android:textAppearance="?android:attr/textAppearanceSmall"
+         />
 
     <TextView
         android:id="@+id/userOpinion"
@@ -97,7 +103,7 @@
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/userOpinionLbl"
         android:layout_below="@+id/userOpinionLbl"
-        android:layout_marginTop="18dp"
+        android:layout_marginTop="5dp"
         android:text="Bla bla bla" />  
 
 </RelativeLayout>
