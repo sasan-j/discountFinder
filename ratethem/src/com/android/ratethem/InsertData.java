@@ -78,6 +78,7 @@ public class InsertData extends Activity {
 	private RatingBar ratingBar;
 	private File mImageFile = null;
 	private String mItemName = null;
+	private String mItemCategory = null;
 
 	//for image capturing
 	private static final int ACTION_CAPTURE_IMAGE = 1;
@@ -101,9 +102,15 @@ public class InsertData extends Activity {
 	Uri imageUri = null;
 	static TextView imageDetails = null;
 	//private ImageView mImage;
+	private EditText mItemNameEdit;
 	private EditText mPlaceEdit;
 	private EditText mLocationEdit;
 	private EditText mViewsEdit;
+	
+	private String mItemNameInfo = null;
+	private String mPlaceInformation = null;
+	private String mLocationInformation = null;
+
 	private String mLatitude = null;
 	private String mLongitude = null;
 	InsertData CameraActivity = null;
@@ -111,9 +118,7 @@ public class InsertData extends Activity {
 	private String mCriteria = null;
 	private String mSearch = null;
 	private String mPublish = null;
-	private String mPlaceInformation = null;
 	private String mRatings = null;
-	private String mLocationInformation = null;
 	private String mYourViews = null;
 
 
@@ -316,27 +321,7 @@ public class InsertData extends Activity {
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////////
-	@Override
-	public boolean dispatchTouchEvent(MotionEvent event) {
-	    View view = getCurrentFocus();
-	    boolean ret = super.dispatchTouchEvent(event);
 
-	    if (view instanceof EditText) {
-	        View w = getCurrentFocus();
-	        int scrcoords[] = new int[2];
-	        w.getLocationOnScreen(scrcoords);
-	        float x = event.getRawX() + w.getLeft() - scrcoords[0];
-	        float y = event.getRawY() + w.getTop() - scrcoords[1];
-	        
-	        if (event.getAction() == MotionEvent.ACTION_UP 
-	 && (x < w.getLeft() || x >= w.getRight() 
-	 || y < w.getTop() || y > w.getBottom()) ) { 
-	            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-	            imm.hideSoftInputFromWindow(getWindow().getCurrentFocus().getWindowToken(), 0);
-	        }
-	    }
-	 return ret;
-	}
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -349,14 +334,18 @@ public class InsertData extends Activity {
 		// Get the extras from calling activity.
 		Bundle extras = getIntent().getExtras();
 		if (extras != null) {
-			mItemName = extras.getString(RateThemUtil.ITEM_NAME);
+			//mItemName = extras.getString(RateThemUtil.ITEM_NAME);
+			mItemCategory = extras.getString(RateThemUtil.ITEM_CATEGORY);
 			mCriteria = extras.getString(RateThemUtil.CRITERIA);
 		}
 		Log.d(LOG_TAG, "Criteria sent: " + mCriteria);
 		mImageView = (ImageView) findViewById(R.id.showImg);
+		
+		mItemNameEdit = (EditText) findViewById(R.id.item_name);
 		mPlaceEdit = (EditText) findViewById(R.id.place_name);
 		mLocationEdit = (EditText) findViewById(R.id.location);
 		mViewsEdit = (EditText) findViewById(R.id.your_view);
+		
 		mSearch = getString(R.string.search);
 		mPublish = getString(R.string.publish);
 		Log.d(LOG_TAG, "Strings for Search and publish: " + mSearch + " : "
@@ -366,7 +355,7 @@ public class InsertData extends Activity {
 		// instantiate rating bar and add listener.
 		initRatingBar();
 
-		
+
 
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.FROYO) {
 			mAlbumStorageDirFactory = new FroyoAlbumDirFactory();
@@ -431,6 +420,8 @@ public class InsertData extends Activity {
 	 * Push information to either database or server.
 	 */
 	private void insertInformation(View v) {
+		
+		mItemNameInfo = mItemNameEdit.getText().toString();
 		mPlaceInformation = mPlaceEdit.getText().toString();
 		mLocationInformation = mLocationEdit.getText().toString();
 		mYourViews = mViewsEdit.getText().toString();
@@ -442,8 +433,8 @@ public class InsertData extends Activity {
 			mYourViews = getString(R.string.no_info);
 		} else if (mRatings == null) {
 			mRatings = "0";
-		} else if (mItemName == null) {
-			mItemName = getString(R.string.no_info);
+		} else if (mItemNameInfo == null) {
+			mItemNameInfo = getString(R.string.no_info);
 		}
 		// Below code inserts into database currently. Must be commented
 		// when server contact is established.
@@ -463,7 +454,8 @@ public class InsertData extends Activity {
 	private void insertToDb() {
 		try {
 			ContentValues cv = new ContentValues();
-			cv.put(RateAgent.RateProvider.ITEM_NAME, mItemName);
+			cv.put(RateAgent.RateProvider.ITEM_NAME, mItemNameInfo);
+			cv.put(RateAgent.RateProvider.ITEM_CATEGORY, mItemCategory);
 			cv.put(RateAgent.RateProvider.ITEM_PLACE_NAME, mPlaceInformation);
 			cv.put(RateAgent.RateProvider.ITEM_PIC, mCurrentPhotoPath);
 			cv.put(RateAgent.RateProvider.ITEM_RATING, mRatings);
@@ -481,33 +473,45 @@ public class InsertData extends Activity {
 		}
 	}
 
+	public void initRatingBar() {
+
+		ratingBar = (RatingBar) findViewById(R.id.ratingBar);
+
+		// if rating value is changed,
+		// display the current rating value in the result (textview)
+		// automatically
+		ratingBar.setOnRatingBarChangeListener(new OnRatingBarChangeListener() {
+			public void onRatingChanged(RatingBar ratingBar, float rating,
+					boolean fromUser) {
+
+				Toast.makeText(InsertData.this,
+						String.valueOf(ratingBar.getRating()),
+						Toast.LENGTH_SHORT).show();
+
+			}
+		});
+
+	}
+	
 	protected String sendFormToServer(){
-
+	
 		String url = "http://df.jafarnejad.org/discounts/post_discount/"; 
-
+	
 		try {
 			HttpClient httpclient = new DefaultHttpClient();
 			HttpPost httppost = new HttpPost(url);
 			//MultipartEntity reqEntity = new MultipartEntity();
 			MultipartEntityBuilder multipartEntity = MultipartEntityBuilder.create();
-
-			/*
-			String in = item_name.getText().toString();
-			String r = rate.getText().toString();
-			String lt = location_txt.getText().toString();
-			String la = latitude.getText().toString();
-			String lo = longitude.getText().toString();
-			String id = user_id.getText().toString();
-			 */
 			multipartEntity.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
-			multipartEntity.addTextBody("item_name", mItemName);
-			multipartEntity.addTextBody("place_name", mPlaceInformation);
-			multipartEntity.addTextBody("rate", mRatings);
-			multipartEntity.addTextBody("location_txt", mLocationInformation);
-			multipartEntity.addTextBody("latitude", "567587");
-			multipartEntity.addTextBody("longitude", "657543");
-			multipartEntity.addTextBody("user_id", "test1");
-
+			multipartEntity.addTextBody(RateThemUtil.ITEM_CATEGORY, mItemCategory);
+			multipartEntity.addTextBody(RateThemUtil.ITEM_NAME, mItemNameInfo);
+			multipartEntity.addTextBody(RateThemUtil.ITEM_PLACE_NAME, mPlaceInformation);
+			multipartEntity.addTextBody(RateThemUtil.ITEM_RATING, mRatings);
+			multipartEntity.addTextBody(RateThemUtil.ITEM_LOC, mLocationInformation);
+			multipartEntity.addTextBody(RateThemUtil.ITEM_LATITUDE, "567587");
+			multipartEntity.addTextBody(RateThemUtil.ITEM_LONGITUDE, "657543");
+			multipartEntity.addTextBody(RateThemUtil.USER_ID, "test1");
+	
 			if(mCurrentPhotoPath != null){
 				//for image
 				//AssetManager assetManager = getAssets();
@@ -538,7 +542,7 @@ public class InsertData extends Activity {
 				Log.d(LOG_TAG,response.getStatusLine().toString());
 				return response.getStatusLine().toString();
 			}
-
+	
 		} catch (Exception e) {
 			Log.d(LOG_TAG,e.toString());
 			return e.toString();
@@ -546,27 +550,6 @@ public class InsertData extends Activity {
 		//Looper.loop();
 	}
 
-
-	public void initRatingBar() {
-
-		ratingBar = (RatingBar) findViewById(R.id.ratingBar);
-
-		// if rating value is changed,
-		// display the current rating value in the result (textview)
-		// automatically
-		ratingBar.setOnRatingBarChangeListener(new OnRatingBarChangeListener() {
-			public void onRatingChanged(RatingBar ratingBar, float rating,
-					boolean fromUser) {
-
-				Toast.makeText(InsertData.this,
-						String.valueOf(ratingBar.getRating()),
-						Toast.LENGTH_SHORT).show();
-
-			}
-		});
-
-	}
-	
 	// Uses AsyncTask to create a task away from the main UI thread. This task takes a 
 	// URL string and uses it to create an HttpUrlConnection. Once the connection
 	// has been established, the AsyncTask downloads the contents of the webpage as
@@ -591,5 +574,28 @@ public class InsertData extends Activity {
 
 	  }
 	}
+	
+    ///////////////////////////////////////////////////////////////////////////////////////
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent event) {
+        View view = getCurrentFocus();
+        boolean ret = super.dispatchTouchEvent(event);
+
+        if (view instanceof EditText) {
+            View w = getCurrentFocus();
+            int scrcoords[] = new int[2];
+            w.getLocationOnScreen(scrcoords);
+            float x = event.getRawX() + w.getLeft() - scrcoords[0];
+            float y = event.getRawY() + w.getTop() - scrcoords[1];
+            
+            if (event.getAction() == MotionEvent.ACTION_UP 
+     && (x < w.getLeft() || x >= w.getRight() 
+     || y < w.getTop() || y > w.getBottom()) ) { 
+                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(getWindow().getCurrentFocus().getWindowToken(), 0);
+            }
+        }
+     return ret;
+    }
 
 }

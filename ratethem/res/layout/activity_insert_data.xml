@@ -9,6 +9,17 @@
     android:gravity="fill"
     android:orientation="vertical">
 
+    
+        <EditText
+        android:id="@+id/item_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/place_name"
+        android:layout_below="@+id/ratingBar"
+        android:ems="10"
+        android:hint="Item Location"
+        android:inputType="textPersonName"
+        android:visibility="visible" />
 
     <EditText
         android:id="@+id/location"
@@ -24,18 +35,13 @@
     <EditText
         android:id="@+id/your_view"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="180dp"
         android:layout_alignLeft="@+id/location"
         android:layout_below="@+id/location"
         android:ems="10"
         android:hint="Your View"
-        android:gravity="top"
-        android:lines="6"
-        android:visibility="visible" 
-        android:scrollbarStyle="insideInset"
-		android:scrollbars="vertical" 
-		android:overScrollMode="always"
-        />
+        android:inputType="textMultiLine"
+        android:visibility="visible" />
 
     <ImageButton
         android:id="@+id/Done"
@@ -63,7 +69,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/ratingBar"
-        android:layout_below="@+id/ratingBar"
+        android:layout_below="@+id/item_name"
         android:layout_marginTop="12dp"
         android:ems="10"
         android:hint="Item Name"
@@ -91,4 +97,3 @@
         android:stepSize="0.5" />
     </RelativeLayout>
 </ScrollView>
-

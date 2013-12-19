@@ -1,7 +1,13 @@
 package com.android.ratethem;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import com.android.ratethem.server.ServerGet;
 import com.android.ratethem.util.*;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import android.app.Activity;
@@ -9,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.support.v4.app.NavUtils;
 import android.annotation.TargetApi;
@@ -33,6 +40,17 @@ public class SearchItemView extends Activity {
     private TextView mLocationInfo;
     private TextView mViewsInfo;
     private Bitmap mPhoto = null;
+    
+    
+    private String mItemID = null;
+    private String mItemCategory = null;
+    private String mPlaceName = null;
+    private String mLocation = null;
+    private String mLocLatitude = null;
+    private String mLocLongitude = null;
+    private String mPicPath = null;
+    
+    
     private String mCriteria = null;
     private String mSearch = null;
     private String mPublish = null;
@@ -50,8 +68,9 @@ public class SearchItemView extends Activity {
 		// Get the extras from calling activity.
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
-                mItemName = extras.getString(RateThemUtil.ITEM_NAME);
-                mCriteria = extras.getString(RateThemUtil.CRITERIA);
+            mItemID = extras.getString(RateThemUtil.ITEM_ID);
+            mItemName = extras.getString(RateThemUtil.ITEM_NAME);
+            mCriteria = extras.getString(RateThemUtil.CRITERIA);
         }
         String discPlaceTxt = extras.getString(RateThemUtil.ITEM_PLACE_NAME);
         String discLocationTxt = extras.getString(RateThemUtil.ITEM_LOC);
@@ -59,18 +78,23 @@ public class SearchItemView extends Activity {
         String userViewTxt = extras.getString(RateThemUtil.ITEM_COMMENT);
         String discImagePath = extras.getString(RateThemUtil.ITEM_PIC);
         
+        //getting details
+		//new GetItemDetailsServer().execute();
+        
+        //RatingBar discRating = (RatingBar) findViewById(R.id.ratingBar);
 		discImage = (ImageView) findViewById(R.id.discImage);
 		discTitle = (TextView) findViewById(R.id.discTitle);
 		discPlace = (TextView) findViewById(R.id.DiscPlace);
 		discLocation = (TextView) findViewById(R.id.discLocation);
 		userView = (TextView)findViewById(R.id.userOpinion);
 		
+		
 		discTitle.setText(mItemName);
         discPlace.setText(discPlaceTxt);
         discLocation.setText(discLocationTxt);
         //discRating
         userView.setText(userViewTxt);
-        if(discImagePath!=null){
+        if(discImagePath!=null && discImagePath.length()>1){
     		Bitmap mImageBitmap = BitmapFactory.decodeFile(discImagePath);
     		//discImage.setImageBitmap(Bitmap.createScaledBitmap(mImageBitmap, discImage.getWidth(), discImage.getHeight(), false));
     	    Drawable d = getResources().getDrawable(R.drawable.no_image);
@@ -114,6 +138,51 @@ public class SearchItemView extends Activity {
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
+	}
+	
+	private class GetItemDetailsServer extends AsyncTask<Void, Void, Void>{
+		private JSONArray jArray;
+		@Override
+		protected Void doInBackground(Void... position) {
+			ServerGet serGet = new ServerGet();
+			jArray = serGet.getJSONItemDetails(mItemID);
+			return null;
+		}
+		
+		@Override
+		protected void onPostExecute(Void result){
+			try {
+			for(int i = 0; i < jArray.length(); i++){				
+					JSONObject itemName = jArray.getJSONObject(i);
+					mItemID = itemName.getString(RateThemUtil.ITEM_ID);				
+					mItemCategory = itemName.getString(RateThemUtil.ITEM_CATEGORY);
+					mItemName = itemName.getString(RateThemUtil.ITEM_NAME);
+					mRatings = itemName.getString(RateThemUtil.ITEM_RATING);					
+					mPlaceName = itemName.getString(RateThemUtil.ITEM_PLACE_NAME);
+					mLocation = itemName.getString(RateThemUtil.ITEM_LOC);
+					mLocLatitude = itemName.getString(RateThemUtil.ITEM_LATITUDE);
+					mLocLongitude = itemName.getString(RateThemUtil.ITEM_LONGITUDE);
+					//mComments = itemName.getString(RateThemUtil.ITEM_COMMENT);
+					mPicPath = itemName.getString(RateThemUtil.ITEM_PIC);
+					
+					updateFields();
+					
+			}
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		
+	}
+	
+	public void updateFields(){ 
+	discTitle.setText(mItemName);
+    discPlace.setText(mPlaceName);
+    discLocation.setText(mLocation);
+    //discRating
+    //userView.setText(mComments);
 	}
 
 }

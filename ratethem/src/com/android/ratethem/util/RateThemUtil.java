@@ -26,6 +26,8 @@ public class RateThemUtil {
     public static final String TABLE_NAME = "Items";
     
 	public static final String _ID = "_id";
+	
+	public static final String ITEM_ID = "item_id";
 
 	public static final String ITEM_NAME = "item_name";
 	
@@ -44,7 +46,9 @@ public class RateThemUtil {
 	public static final String ITEM_LONGITUDE = "item_location_longitude";
 
 	public static final String ITEM_COMMENT = "item_comment";
-    
+	
+	public static final String USER_ID = "user_id"; 
+	
     public static final Uri RATE_URI = Uri
             .parse("content://com.android.ratethem.providers.RateContentProvider" + "/"
                     + RateAgent.RateProvider.TABLE_NAME);
