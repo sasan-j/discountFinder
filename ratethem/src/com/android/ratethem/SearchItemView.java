@@ -38,12 +38,9 @@ public class SearchItemView extends Activity {
     private TextView userView;;
     
     private String mItemName = null;
-    static TextView imageDetails = null;
     private TextView mPlaceInfo;
     private TextView mLocationInfo;
-    private TextView mViewsInfo;
-    private Bitmap mPhoto = null;
-    
+    private TextView mViewsInfo;    
     
     private String mItemID = null;
     private String mItemCategory = null;
@@ -56,10 +53,6 @@ public class SearchItemView extends Activity {
 	private String mItemImageUrl = null;
 
     
-    
-    private String mCriteria = null;
-    private String mSearch = null;
-    private String mPublish = null;
     private String mPlaceInformation = null;
     private String mRatings = null;
     private String mLocationInformation = null;
@@ -79,8 +72,6 @@ public class SearchItemView extends Activity {
         if (extras != null) {
             mItemID = extras.getString(RateThemUtil.ITEM_ID);
             mItemName = extras.getString(RateThemUtil.ITEM_NAME);
-            mCriteria = extras.getString(RateThemUtil.CRITERIA);
-
 	        mPlaceName = extras.getString(RateThemUtil.ITEM_PLACE_NAME);
 	        mLocation = extras.getString(RateThemUtil.ITEM_LOC);
 	        mRatings = extras.getString(RateThemUtil.ITEM_RATING);
@@ -119,14 +110,6 @@ public class SearchItemView extends Activity {
 			aq.id(discImage).image(mItemImageUrl, true, true, d.getIntrinsicWidth()*2, 0, presetImage, AQuery.FADE_IN_NETWORK, AQuery.RATIO_PRESERVE);
 		}
 			
-		/*	
-        if(discImagePath!=null && discImagePath.length()>1){
-    		Bitmap mImageBitmap = BitmapFactory.decodeFile(discImagePath);
-    		//discImage.setImageBitmap(Bitmap.createScaledBitmap(mImageBitmap, discImage.getWidth(), discImage.getHeight(), false));
-    	    Drawable d = getResources().getDrawable(R.drawable.no_image);
-    	    discImage.setImageBitmap(Bitmap.createScaledBitmap(mImageBitmap, d.getIntrinsicWidth(), d.getIntrinsicHeight(), false));
-        }
-		*/
 		// Show the Up button in the action bar.
 		//setupActionBar();
         
@@ -165,7 +148,7 @@ public class SearchItemView extends Activity {
 		}
 		return super.onOptionsItemSelected(item);
 	}
-	
+	/*
 	private class GetItemDetailsServer extends AsyncTask<Void, Void, Void>{
 		private JSONArray jArray;
 		@Override
@@ -202,6 +185,7 @@ public class SearchItemView extends Activity {
 		
 		
 	}
+	*/
 	
 	public void updateFields(){ 
 	discTitle.setText(mItemName);

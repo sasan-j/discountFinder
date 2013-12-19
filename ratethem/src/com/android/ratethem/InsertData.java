@@ -238,21 +238,7 @@ public class InsertData extends Activity {
 						PackageManager.MATCH_DEFAULT_ONLY);
 		return list.size() > 0;
 	}
-	/*
-	private void setBtnListenerOrDisable( 
-			Button btn, 
-			Button.OnClickListener onClickListener,
-			String intentName
-	) {
-		if (isIntentAvailable(this, intentName)) {
-			btn.setOnClickListener(onClickListener);        	
-		} else {
-			btn.setText( 
-				getText(R.string.cannot).toString() + " " + btn.getText());
-			btn.setClickable(false);
-		}
-	}
-	 */
+
 
 	private void setBtnListenerOrDisable( 
 			ImageButton imgBtn, 
@@ -316,8 +302,6 @@ public class InsertData extends Activity {
 		Drawable d = getResources().getDrawable(R.drawable.no_image);
 		mImageView.setImageBitmap(Bitmap.createScaledBitmap(mImageBitmap, d.getIntrinsicWidth(), d.getIntrinsicHeight(), false));
 
-		//mImageView.setImageBitmap(Bitmap.createScaledBitmap(mImageBitmap,
-		//		mImageView.getMaxWidth(), mImageView.getMaxHeight(), false));
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////////
@@ -389,8 +373,6 @@ public class InsertData extends Activity {
 				TakePicListner,
 				MediaStore.ACTION_IMAGE_CAPTURE
 				);
-		// Display button click listener
-		//takepic.setOnClickListener((OnClickListener) TakePicListner);
 
 		done = (ImageButton) findViewById(R.id.Done);
 		done.setOnClickListener((OnClickListener) DoneListener);
@@ -438,8 +420,7 @@ public class InsertData extends Activity {
 		}
 		// Below code inserts into database currently. Must be commented
 		// when server contact is established.
-		insertToDb();
-
+		//insertToDb();
 		// Below commented code must be uncommented when server insert is ready.
 		//insertToServer();			
 		new SendToServerTask().execute("bla bla");
@@ -513,19 +494,6 @@ public class InsertData extends Activity {
 			multipartEntity.addTextBody(RateThemUtil.USER_ID, "test1");
 	
 			if(mCurrentPhotoPath != null){
-				//for image
-				//AssetManager assetManager = getAssets();
-				//String fileList[] = assetManager.list("tt");
-				//Environment.getDataDirectory()
-				/*
-			File outputDir = getApplication().getCacheDir(); // context being the Activity pointer
-			File outputFile = File.createTempFile("prefix", "txt", outputDir);
-			FileWriter writer = new FileWriter(outputFile, true);
-			try {
-			    writer.write("append here\n");
-			} finally {
-			   writer.close();
-			}*/
 				mImageFile = new File(mCurrentPhotoPath);
 				multipartEntity.addPart("userfile", new FileBody(mImageFile));
 			}
@@ -535,10 +503,6 @@ public class InsertData extends Activity {
 				Log.d(LOG_TAG,response.getStatusLine().toString());
 				return response.getStatusLine().toString();
 			} else {
-				//				//removing files that were sent
-				//				for (File f : zipfiles){
-				//					f.delete();
-				//				}
 				Log.d(LOG_TAG,response.getStatusLine().toString());
 				return response.getStatusLine().toString();
 			}

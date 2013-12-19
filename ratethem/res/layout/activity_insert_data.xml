@@ -17,7 +17,7 @@
         android:layout_alignLeft="@+id/place_name"
         android:layout_below="@+id/ratingBar"
         android:ems="10"
-        android:hint="Item Location"
+        android:hint="Item Name"
         android:inputType="textPersonName"
         android:visibility="visible" />
 
@@ -28,7 +28,7 @@
         android:layout_alignLeft="@+id/place_name"
         android:layout_below="@+id/place_name"
         android:ems="10"
-        android:hint="Item Location"
+        android:hint="Shop Location"
         android:inputType="textPersonName"
         android:visibility="visible" />
 
@@ -72,7 +72,7 @@
         android:layout_below="@+id/item_name"
         android:layout_marginTop="12dp"
         android:ems="10"
-        android:hint="Item Name"
+        android:hint="Shop Name"
         android:inputType="textPersonName"
         android:visibility="visible" />
 
