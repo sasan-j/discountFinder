@@ -33,6 +33,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * ListActivity to display all information retrieved from server or database.
@@ -40,28 +41,20 @@ import android.widget.TextView;
 public class SearchList extends ListActivity {
 
 	private static final String TAG = "ratethem";
-
 	private ListView mList;
-	
 	private ArrayList <ItemInfo> list = new ArrayList<ItemInfo>();
-
 	private String mItemName = null;
-	
 	private String mItemCategory = null;
-
 	private RateAdapter mAdapter;
-
 	private String mCriteria = null;
-	
 	private String mPlaceName = null;
-	
 	private String mRating = null;
-	
 	private String mPicPath = null;
-	
 	private String mLocation = null;
-	
 	private String mComments = null;
+	private String mLocLatitude = null;
+	private String mLocLongitude = null;
+	private String mItemID = null;
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -107,7 +100,17 @@ public class SearchList extends ListActivity {
 			try {
 			for(int i = 0; i < jArray.length(); i++){				
 					JSONObject jsonItem = jArray.getJSONObject(i);
-					list.add(new ItemInfo(jsonItem.getString(RateThemUtil.ITEM_NAME), jsonItem.getString(RateThemUtil.ITEM_RATING), jsonItem.getString(RateThemUtil.ITEM_PIC)));	
+					list.add(new ItemInfo(
+							jsonItem.getString(RateThemUtil.ITEM_ID),
+							jsonItem.getString(RateThemUtil.ITEM_NAME), 
+							jsonItem.getString(RateThemUtil.ITEM_CATEGORY), 
+							jsonItem.getString(RateThemUtil.ITEM_PLACE_NAME), 
+							jsonItem.getString(RateThemUtil.ITEM_RATING), 
+							jsonItem.getString(RateThemUtil.ITEM_PIC), 
+							jsonItem.getString(RateThemUtil.ITEM_LOC), 
+							jsonItem.getString(RateThemUtil.ITEM_LATITUDE), 
+							jsonItem.getString(RateThemUtil.ITEM_LONGITUDE), 
+							jsonItem.getString(RateThemUtil.ITEM_COMMENT)));	
 			}
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
@@ -140,26 +143,33 @@ public class SearchList extends ListActivity {
 				.getColumnIndex(RateAgent.RateProvider.ITEM_RATING));
 	}
 	
+	
 	private void getInformationFromServer(int position){
-		
+		ItemInfo currentItemInfo = list.get(position);
 		ServerGet serGet = new ServerGet();
-		JSONArray jArray = serGet.getJSONItemDetails("23");
+		JSONArray jArray = serGet.getJSONItemDetails(currentItemInfo.getmItemID());
 		try {
 		for(int i = 0; i < jArray.length(); i++){				
 				JSONObject itemName = jArray.getJSONObject(i);
+				mItemID = itemName.getString(RateThemUtil.ITEM_ID);				
+				mItemCategory = itemName.getString(RateThemUtil.ITEM_CATEGORY);
 				mItemName = itemName.getString(RateThemUtil.ITEM_NAME);
+				mRating = itemName.getString(RateThemUtil.ITEM_RATING);					
 				mPlaceName = itemName.getString(RateThemUtil.ITEM_PLACE_NAME);
-				mComments = itemName.getString(RateThemUtil.ITEM_COMMENT);
 				mLocation = itemName.getString(RateThemUtil.ITEM_LOC);
+				mLocLatitude = itemName.getString(RateThemUtil.ITEM_LATITUDE);
+				mLocLongitude = itemName.getString(RateThemUtil.ITEM_LONGITUDE);
+				mComments = itemName.getString(RateThemUtil.ITEM_COMMENT);
 				mPicPath = itemName.getString(RateThemUtil.ITEM_PIC);
-				mRating = itemName.getString(RateThemUtil.ITEM_RATING);	
-				
 		}
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
+	
+	
+	
 
 	private AdapterView.OnItemClickListener mItemListener = new AdapterView.OnItemClickListener() {
 
@@ -168,20 +178,54 @@ public class SearchList extends ListActivity {
 				long id) {
 			// Comment this when server available.
 			//getInformationFromCursor(position);
-			// Uncomment this when server available.
-			//TODO: uncomment after list view works!
-			getInformationFromServer(position);
+			/***************************
 			Intent intent = new Intent(SearchList.this, SearchItemView.class);
+			intent.putExtra(RateThemUtil.ITEM_ID, mItemID);
+			intent.putExtra(RateThemUtil.ITEM_CATEGORY, mItemCategory);
 			intent.putExtra(RateThemUtil.ITEM_NAME, mItemName);
 			intent.putExtra(RateThemUtil.ITEM_PLACE_NAME, mPlaceName);
 			intent.putExtra(RateThemUtil.ITEM_LOC, mLocation);
+			intent.putExtra(RateThemUtil.ITEM_LATITUDE, mLocLatitude);
+			intent.putExtra(RateThemUtil.ITEM_LONGITUDE, mLocLongitude);
 			intent.putExtra(RateThemUtil.ITEM_PIC, mPicPath);
 			intent.putExtra(RateThemUtil.ITEM_COMMENT, mComments);
 			intent.putExtra(RateThemUtil.ITEM_RATING, mRating);
 			intent.putExtra(RateThemUtil.CRITERIA, mCriteria);
+			startActivity(intent); 
+			 */
+			// Uncomment this when server available.
+			//TODO: uncomment after list view works!
+			//getInformationFromServer(position);
+			ItemInfo currentItemInfo = list.get(position);
+			loadItemInfo(currentItemInfo);
+			Intent intent = new Intent(SearchList.this, SearchItemView.class);
+			intent.putExtra(RateThemUtil.ITEM_ID, mItemID);
+			intent.putExtra(RateThemUtil.ITEM_CATEGORY, mItemCategory);
+			intent.putExtra(RateThemUtil.ITEM_NAME, mItemName);
+			intent.putExtra(RateThemUtil.ITEM_PLACE_NAME, mPlaceName);
+			intent.putExtra(RateThemUtil.ITEM_LOC, mLocation);
+			intent.putExtra(RateThemUtil.ITEM_LATITUDE, mLocLatitude);
+			intent.putExtra(RateThemUtil.ITEM_LONGITUDE, mLocLongitude);
+			intent.putExtra(RateThemUtil.ITEM_PIC, mPicPath);
+			intent.putExtra(RateThemUtil.ITEM_COMMENT, mComments);
+			intent.putExtra(RateThemUtil.ITEM_RATING, mRating);
+			//intent.putExtra(RateThemUtil.CRITERIA, mCriteria);
 			startActivity(intent);
 		}
 	};
+	
+	private void loadItemInfo(ItemInfo _itemInfo){
+		mItemID = _itemInfo.getmItemID();
+		mItemCategory = _itemInfo.getmItemCategory();
+		mItemName = _itemInfo.getmItemName();
+		mPlaceName = _itemInfo.getmPlaceName();
+		mLocation = _itemInfo.getmLocation();
+		mLocLatitude = _itemInfo.getmLocLatitude();
+		mLocLongitude = _itemInfo.getmLocLongitude();
+		mPicPath = _itemInfo.getmPicPath();
+		mComments = _itemInfo.getmComments();
+		mRating = _itemInfo.getmRating();
+	}
 	
 	private class ListAdapter extends ArrayAdapter<ItemInfo>{
 		
@@ -211,7 +255,7 @@ public class SearchList extends ListActivity {
 			
 			ItemInfo item = mItems.get(position);
 			if(item != null){
-				String picPath = item.getPicture();
+				String picPath = item.getmPicPath();
 				if (picPath != null && picPath.length()>1) {
 				    Drawable d = getResources().getDrawable(R.drawable.no_image);
 				    //Log.d("ratethem", "heigh is : "+(d.getIntrinsicHeight()));
@@ -220,8 +264,8 @@ public class SearchList extends ListActivity {
 					icon.setImageBitmap(Bitmap.createScaledBitmap(mImageBitmap, d.getIntrinsicWidth(), d.getIntrinsicHeight(), false));
 				}
 				//icon.setImageBitmap(BitmapFactory.decodeFile(picPath));
-				itemInfo.setText(item.getName());
-				rate.setRating(Float.parseFloat(item.getRating()));
+				itemInfo.setText(item.getmItemName());
+				rate.setRating(Float.parseFloat(item.getmRating()));
 			}
 			return v;
 		}

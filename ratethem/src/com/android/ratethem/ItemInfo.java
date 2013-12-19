@@ -1,32 +1,119 @@
 package com.android.ratethem;
 
+//import com.android.ratethem.SearchList.RateAdapter;
+
 /**
  * Class is helper to add information to list.
  */
 public class ItemInfo {
+
+	private String mItemID = null;
+	private String mItemName = null;
+	private String mItemCategory = null;
+	private String mPlaceName = null;
+	private String mRating = null;
+	private String mPicPath = null;
+	private String mLocation = null;
+	private String mLocLatitude = null;
+	private String mLocLongitude = null;
+	private String mComments = null;
+
 	
-	private String mName = null;
+
 	
-	private String mRate = null;
-	
-	private String mPic = null;
-	
-	public ItemInfo(String name, String rate, String pic){
-		this.mName = name;
-		this.mRate = rate;
-		this.mPic = pic;
+	public ItemInfo(String mItemID, String mItemName, String mItemCategory,
+			String mPlaceName, String mRating, String mPicPath,
+			String mLocation, String mLocLatitude, String mLocLongitude,
+			String mComments) {
+		super();
+		this.mItemID = mItemID;
+		this.mItemName = mItemName;
+		this.mItemCategory = mItemCategory;
+		this.mPlaceName = mPlaceName;
+		this.mRating = mRating;
+		this.mPicPath = mPicPath;
+		this.mLocation = mLocation;
+		this.mLocLatitude = mLocLatitude;
+		this.mLocLongitude = mLocLongitude;
+		this.mComments = mComments;
 	}
-	
-	public String getName(){
-		return mName;
+
+
+
+
+	public String getmPicPath() {
+		return mPicPath;
 	}
-	
-	public String getRating(){
-		return mRate;
+
+
+
+
+	public void setmPicPath(String mPicPath) {
+		this.mPicPath = mPicPath;
 	}
-	
-	public String getPicture(){
-		return mPic;
+
+
+
+
+	public String getmItemID() {
+		return mItemID;
 	}
+
+
+
+
+	public String getmItemName() {
+		return mItemName;
+	}
+
+
+
+
+	public String getmItemCategory() {
+		return mItemCategory;
+	}
+
+
+
+
+	public String getmPlaceName() {
+		return mPlaceName;
+	}
+
+
+
+
+	public String getmRating() {
+		return mRating;
+	}
+
+
+
+
+	public String getmLocation() {
+		return mLocation;
+	}
+
+
+
+
+	public String getmLocLatitude() {
+		return mLocLatitude;
+	}
+
+
+
+
+	public String getmLocLongitude() {
+		return mLocLongitude;
+	}
+
+
+
+
+	public String getmComments() {
+		return mComments;
+	}
+
 
 }
