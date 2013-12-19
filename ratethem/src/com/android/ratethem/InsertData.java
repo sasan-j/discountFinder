@@ -479,6 +479,7 @@ public class InsertData extends Activity {
 			//MultipartEntity reqEntity = new MultipartEntity();
 			MultipartEntityBuilder multipartEntity = MultipartEntityBuilder.create();
 			multipartEntity.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
+			multipartEntity.addTextBody("category", mItemCategory);
 			multipartEntity.addTextBody("item_name", mItemNameInfo);
 			multipartEntity.addTextBody("place_name", mPlaceInformation);
 			multipartEntity.addTextBody("rate", mRatings);

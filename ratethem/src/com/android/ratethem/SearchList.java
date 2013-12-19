@@ -103,7 +103,7 @@ public class SearchList extends ListActivity {
 		@Override
 		protected Void doInBackground(Void... arg0) {
 			ServerGet serGet = new ServerGet();
-			JSONArray jArray = serGet.getJSONUrl(RateThemUtil.SERVER_URL);
+			JSONArray jArray = serGet.getJSONUrl(RateThemUtil.SERVER_QUERY_URL);
 			try {
 			for(int i = 0; i < jArray.length(); i++){				
 					JSONObject itemName = jArray.getJSONObject(i);
@@ -142,7 +142,7 @@ public class SearchList extends ListActivity {
 	
 	private void getInformationFromServer(int position){
 		ServerGet serGet = new ServerGet();
-		JSONArray jArray = serGet.getJSONUrl(RateThemUtil.SERVER_URL);
+		JSONArray jArray = serGet.getJSONUrl(RateThemUtil.SERVER_QUERY_URL);
 		try {
 		for(int i = 0; i < jArray.length(); i++){				
 				JSONObject itemName = jArray.getJSONObject(i);
