@@ -6,7 +6,10 @@ import com.android.ratethem.providers.RateAgent;
 
 public class RateThemUtil {
 	
-	public static final String SERVER_URL = "/localhost/8081";
+	//public static final String SERVER_URL = "/localhost/8081";
+	public static final String SERVER_QUERY_URL = "http://df.jafarnejad.org/discounts/get_discount/";
+	public static final String SERVER_POST_URL = "http://df.jafarnejad.org/discounts/post_discount/";
+
 	
 	public static final String CRITERIA = "criteria";
 	
@@ -25,6 +28,8 @@ public class RateThemUtil {
 	public static final String _ID = "_id";
 
 	public static final String ITEM_NAME = "item_name";
+	
+	public static final String ITEM_CATEGORY = "item_category";
 
 	public static final String ITEM_PIC = "item_pic";
 

@@ -130,7 +130,8 @@ public class SearchCriteria extends Activity {
 						.getResources().getString(R.string.search));
 			}
 			if (null != mItemSearched) {
-				intent.putExtra(RateThemUtil.ITEM_NAME, mItemSearched);
+				//intent.putExtra(RateThemUtil.ITEM_NAME, mItemSearched);
+				intent.putExtra(RateThemUtil.ITEM_CATEGORY, mItemSearched);
 			}
 			if (null != mDistanceString) {
 				intent.putExtra(RateThemUtil.RADIUS, mDistanceString);

@@ -18,6 +18,8 @@ public class RateAgent {
 
 		public static final String ITEM_NAME = "item_name";
 
+		public static final String ITEM_CATEGORY = "item_category";
+		
 		public static final String ITEM_PIC = "item_pic";
 
 		public static final String ITEM_RATING = "item_rating";
