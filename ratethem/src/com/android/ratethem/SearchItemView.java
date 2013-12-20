@@ -72,10 +72,18 @@ public class SearchItemView extends Activity {
         if (extras != null) {
             mItemID = extras.getString(RateThemUtil.ITEM_ID);
             mItemName = extras.getString(RateThemUtil.ITEM_NAME);
+            if(mItemName.length()==0 || mItemName==null )
+            	mItemName=getString(R.string.no_info);
 	        mPlaceName = extras.getString(RateThemUtil.ITEM_PLACE_NAME);
+            if(mPlaceName.length()==0 || mPlaceName==null )
+            	mPlaceName=getString(R.string.no_info);
 	        mLocation = extras.getString(RateThemUtil.ITEM_LOC);
+            if(mLocation.length()==0 || mLocation==null )
+            	mLocation=getString(R.string.no_info);
 	        mRatings = extras.getString(RateThemUtil.ITEM_RATING);
 	        mItemUserViews = extras.getString(RateThemUtil.ITEM_COMMENT);
+            if(mItemUserViews.length()==0 || mItemUserViews==null )
+            	mItemUserViews=getString(R.string.no_info);
 	    	mItemImageUrl = extras.getString(RateThemUtil.ITEM_PIC);
         }     
         //getting details
