@@ -6,8 +6,8 @@
     android:padding="6dp" >
     <ImageView
         android:id="@+id/pic"
-        android:layout_width="48dp"
-        android:layout_height="64dp"
+        android:layout_width="64dp"
+        android:layout_height="96dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentTop="true"
         android:layout_marginRight="6dp"
@@ -21,13 +21,13 @@
         android:layout_alignParentTop="true"
         android:layout_toRightOf="@id/pic"
         android:layout_alignParentRight="true"
-        android:textSize="16sp" />
+        android:textSize="24sp" />
 
     <RatingBar
         android:id="@+id/ratingBar"
         style="?android:attr/ratingBarStyleSmall"
         android:layout_width="wrap_content"
-        android:layout_height="fill_parent"
+        android:layout_height="wrap_content"
         android:layout_below="@id/loc_info"
         android:layout_toRightOf="@id/pic"
         android:numStars="5" />

@@ -318,7 +318,10 @@ public class SearchList extends ListActivity implements GooglePlayServicesClient
 					aq.id(icon).image(picUrl, true, true, d.getIntrinsicWidth()/2, 0, presetImage, AQuery.FADE_IN_NETWORK, AQuery.RATIO_PRESERVE);
 				}
 				//icon.setImageBitmap(BitmapFactory.decodeFile(picPath));
-				itemInfo.setText(item.getmItemName());
+				String itemTitle = item.getmItemName();
+	            if(itemTitle.length()==0 || itemTitle==null )
+	            	itemTitle="No title";
+				itemInfo.setText(itemTitle);
 				rate.setRating(Float.parseFloat(item.getmRating()));
 			}
 			return v;
