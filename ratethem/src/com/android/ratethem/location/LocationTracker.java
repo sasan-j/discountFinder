@@ -351,7 +351,8 @@ public class LocationTracker implements
 	                    exception1.printStackTrace();
 
 	                    // Return an error message
-	                    return (context.getString(R.string.IO_Exception_getFromLocation));
+	                    //return (context.getString(R.string.IO_Exception_getFromLocation));
+	                    return context.getString(R.string.no_address_found);
 
 	                // Catch incorrect latitude or longitude values
 	                } catch (IllegalArgumentException exception2) {
