@@ -65,7 +65,8 @@ public final class LocationUtils {
 
     // Create an empty string for initializing strings
     public static final String EMPTY_STRING = new String();
-
+  
+    
     /**
      * Get the latitude and longitude from the Location object returned by
      * Location Services.
