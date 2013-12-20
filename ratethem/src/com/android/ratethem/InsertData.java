@@ -1,6 +1,5 @@
 package com.android.ratethem;
-//testing
-//import com.androidexample.cameraphotocapture.CameraPhotoCapture;
+
 
 import com.android.ratethem.util.*;
 
@@ -50,6 +49,8 @@ import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Environment;
 import android.os.RemoteException;
@@ -435,8 +436,10 @@ public class InsertData extends FragmentActivity implements GooglePlayServicesCl
 		@Override
 		public void onClick(View v) {
 			insertInformation(v);
+			/*
 			Toast.makeText(v.getContext(), "Information added!!!",
 					Toast.LENGTH_SHORT).show();
+			*/
 			finish();
 		}
 	};
@@ -473,8 +476,11 @@ public class InsertData extends FragmentActivity implements GooglePlayServicesCl
 		// when server contact is established.
 		//insertToDb();
 		// Below commented code must be uncommented when server insert is ready.
-		//insertToServer();			
-		new SendToServerTask().execute("bla bla");
+		//insertToServer();		
+		if(checkNetwork())
+			new SendToServerTask().execute("bla bla");
+		else
+			Toast.makeText(v.getContext(),"Sorry you need an internet connection to post discounts",Toast.LENGTH_SHORT).show();
 		//sendFormToServer(v);
 		//Toast.makeText(v.getContext(), ,
 		//		Toast.LENGTH_SHORT).show();
@@ -587,7 +593,8 @@ public class InsertData extends FragmentActivity implements GooglePlayServicesCl
 	   @Override
 	   protected void onPostExecute(String result) {
 	       //textView.setText(result);
-	       Toast.makeText(InsertData.this, result, Toast.LENGTH_LONG).show();
+	       //Toast.makeText(InsertData.this, result, Toast.LENGTH_LONG).show();
+	       Toast.makeText(InsertData.this, "Upload was successful", Toast.LENGTH_LONG).show();
 
 	  }
 	}
@@ -732,6 +739,17 @@ public class InsertData extends FragmentActivity implements GooglePlayServicesCl
         	mLocationEdit.setTextColor(getResources().getColor(R.color.common_signin_btn_text_light));
     	}
 
+    }
+    
+    public boolean checkNetwork() {
+        ConnectivityManager connMgr = (ConnectivityManager) 
+            getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        if (networkInfo != null && networkInfo.isConnected()) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
 }

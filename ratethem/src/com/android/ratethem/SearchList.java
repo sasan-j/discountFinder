@@ -1,5 +1,6 @@
 package com.android.ratethem;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,10 +8,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.android.ratethem.location.LocationTracker;
+import com.android.ratethem.location.LocationUtils;
 import com.android.ratethem.providers.RateAgent;
 import com.android.ratethem.server.ServerGet;
 import com.android.ratethem.util.RateThemUtil;
 
+import android.app.Activity;
 import android.app.ListActivity;
 import android.content.ContentProviderClient;
 import android.content.Context;
@@ -19,6 +23,9 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
+import android.location.Location;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.RemoteException;
@@ -36,13 +43,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.androidquery.*;
+import com.google.android.gms.common.GooglePlayServicesClient;
 
 /**
  * ListActivity to display all information retrieved from server or database.
  */
-public class SearchList extends ListActivity {
+public class SearchList extends ListActivity implements GooglePlayServicesClient.ConnectionCallbacks{
 
 	private static final String TAG = "ratethem";
+	private static final String LOG_TAG = "ratethem";
 	private ListView mList;
 	private ArrayList <ItemInfo> list = new ArrayList<ItemInfo>();
 	private String mItemName = null;
@@ -59,6 +68,16 @@ public class SearchList extends ListActivity {
 	private String mItemID = null;
 	private String mItemImageUrl = null;
 	private String mItemLocalImagePath = null;
+	
+	private String qRadius = null;
+	private String qLatitude = null;
+	private String qLongitude = null;
+	private String qItemID = null;
+	private String qItemCategory = null;
+	private String qManualLocation = null;	
+	
+	private LocationTracker locationTracker = null;
+
 
 
 	public void onCreate(Bundle savedInstanceState) {
@@ -66,9 +85,13 @@ public class SearchList extends ListActivity {
 		Bundle extras = getIntent().getExtras();
 		if (extras != null) {
 			//mItemName = extras.getString(RateThemUtil.ITEM_NAME);
-			mItemCategory = extras.getString(RateThemUtil.ITEM_CATEGORY);
+			qItemCategory = extras.getString(RateThemUtil.ITEM_CATEGORY);
+			qRadius = extras.getString(RateThemUtil.RADIUS);
 			mCriteria = extras.getString(RateThemUtil.CRITERIA);
+			
 		}
+		locationTracker = new LocationTracker(this,this, this);
+		
 		setTitle(mItemName);
 		mList = getListView();
 		mList.setOnItemClickListener(mItemListener);
@@ -76,7 +99,7 @@ public class SearchList extends ListActivity {
 		//getCursorFromDbToDisplay();
 		
 		// Server information retrieval and display. Uncomment when available.
-		new GetHttpData().execute();
+		//new GetHttpData().execute();
 	}
 	
 	private void getCursorFromDbToDisplay(){
@@ -101,7 +124,12 @@ public class SearchList extends ListActivity {
 		@Override
 		protected Void doInBackground(Void... arg0) {
 			ServerGet serGet = new ServerGet();
-			JSONArray jArray = serGet.getJSONQuery(RateThemUtil.SERVER_QUERY_URL, mItemCategory);
+			JSONArray jArray;
+			if(qLatitude==null | qRadius == "0")
+				jArray = serGet.getJSONQuery(RateThemUtil.SERVER_QUERY_URL, qItemCategory);
+			else
+				jArray = serGet.getJSONQueryByDistance(qItemCategory, qRadius, qLatitude, qLongitude);
+			
 			try {
 			for(int i = 0; i < jArray.length(); i++){				
 					JSONObject jsonItem = jArray.getJSONObject(i);
@@ -338,4 +366,116 @@ public class SearchList extends ListActivity {
 		}
 
 	}
+	
+    ////////////////////////////////////////////////////////
+
+	
+	
+	/*
+	 * Method to capture data sent back from activity launched by
+	 * startActivityResult.
+	 */
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		switch (requestCode) {
+        // If the request code matches the code sent in onConnectionFailed
+        case LocationUtils.CONNECTION_FAILURE_RESOLUTION_REQUEST :
+
+            switch (resultCode) {
+                // If Google Play services resolved the problem
+                case Activity.RESULT_OK:
+
+                    // Log the result
+                    Log.d(LocationUtils.APPTAG, getString(R.string.resolved));
+
+                    // Display the result
+                    //mConnectionState.setText(R.string.connected);
+                    Log.d(LocationUtils.APPTAG, getString(R.string.connected));
+                    //mConnectionStatus.setText(R.string.resolved);
+                    Log.d(LocationUtils.APPTAG, getString(R.string.resolved));
+
+                break;
+
+                // If any other result was returned by Google Play services
+                default:
+                    // Log the result
+                    Log.d(LocationUtils.APPTAG, getString(R.string.no_resolution));
+
+                    // Display the result
+                    //mConnectionState.setText(R.string.disconnected);
+                    Log.d(LocationUtils.APPTAG, getString(R.string.disconnected));
+                    //mConnectionStatus.setText(R.string.no_resolution);
+                    Log.d(LocationUtils.APPTAG, getString(R.string.no_resolution));
+
+
+                break;
+            }
+
+        // If any other request code was received
+        default:
+           // Report that this Activity received an unknown requestCode
+           Log.d(LocationUtils.APPTAG,
+                   getString(R.string.unknown_activity_request_code, requestCode));
+
+           break;
+
+
+		} // switch
+	}
+	
+	
+	
+	
+	
+
+    /*
+     * Called by Location Services when the request to connect the
+     * client finishes successfully. At this point, you can
+     * request the current location or start periodic updates
+     */
+    @Override
+    public void onConnected(Bundle bundle) {
+        //mConnectionStatus.setText(R.string.connected);
+		Log.d(LOG_TAG,getString(R.string.connected));
+        locationTracker.getLocation();
+    }
+
+    /*
+     * Called by Location Services if the connection to the
+     * location client drops because of an error.
+     */
+    @Override
+    public void onDisconnected() {
+        //mConnectionStatus.setText(R.string.disconnected);
+		Log.d(LOG_TAG,getString(R.string.disconnected));
+    }
+    
+    public void onLocationReady(){
+    	Location location = locationTracker.getCurrentLocation();
+    	qLatitude = String.valueOf(location.getLatitude());
+    	qLongitude = String.valueOf(location.getLongitude());
+		// Server information retrieval and display. Uncomment when available.
+		
+		if(checkNetwork())
+			new GetHttpData().execute();
+		else
+			Toast.makeText(getBaseContext(),"Sorry you need an internet connection to post discounts",Toast.LENGTH_LONG).show();
+    }
+    
+    public void onAddressReady(){
+    	//mLocationInformation = locationTracker.getCurrentAddLocation();
+    	//mLocationEdit.setText(mLocationInformation);
+    }
+    
+    public boolean checkNetwork() {
+        ConnectivityManager connMgr = (ConnectivityManager) 
+            getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        if (networkInfo != null && networkInfo.isConnected()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+	
 }

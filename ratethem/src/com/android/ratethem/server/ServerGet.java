@@ -25,6 +25,9 @@ import com.android.ratethem.util.RateThemUtil;
 public class ServerGet {
 
 	private InputStream mInStream = null;
+	
+	String url = RateThemUtil.SERVER_QUERY_URL;
+
 
 	private JSONArray mJsonArray = null;
 
@@ -85,9 +88,62 @@ public class ServerGet {
 		return mJsonArray;
 	}
 	
+	public JSONArray getJSONQueryByDistance(String _category, String _radius, String lat, String lng) {
+		try {
+			DefaultHttpClient httpClient = new DefaultHttpClient();
+			HttpPost httpPost = new HttpPost(url);
+			MultipartEntityBuilder multipartEntity = MultipartEntityBuilder.create();
+			multipartEntity.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
+			multipartEntity.addTextBody(RateThemUtil.ITEM_CATEGORY, _category);
+			/*
+			multipartEntity.addTextBody("item_name", mItemNameInfo);
+			multipartEntity.addTextBody("place_name", mPlaceInformation);
+			multipartEntity.addTextBody("rate", mRatings);
+			multipartEntity.addTextBody("location_txt", mLocationInformation);
+			*/
+			multipartEntity.addTextBody("query_lat", lat);
+			multipartEntity.addTextBody("query_lng", lng);
+			multipartEntity.addTextBody("query_radius", _radius);
+
+			httpPost.setEntity(multipartEntity.build());
+			HttpResponse httpResponse = httpClient.execute(httpPost);
+			HttpEntity httpEntity = httpResponse.getEntity();
+			mInStream = httpEntity.getContent();
+		} catch (ClientProtocolException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		try {
+			BufferedReader bufReader = new BufferedReader(
+					new InputStreamReader(mInStream, "UTF-8"));
+			StringBuilder sb = new StringBuilder();
+			String line = null;
+			while ((line = bufReader.readLine()) != null) {
+				sb.append(line + "\n");
+			}
+			mInStream.close();
+			mJson = sb.toString();
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		try {
+			mJsonArray = new JSONArray(mJson);
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return mJsonArray;
+	}
+	
 	public JSONArray getJSONItemDetails(String _item_id) {
 		try {
-			String url = RateThemUtil.SERVER_QUERY_URL;
 			DefaultHttpClient httpClient = new DefaultHttpClient();
 			HttpPost httpPost = new HttpPost(url);
 			MultipartEntityBuilder multipartEntity = MultipartEntityBuilder.create();

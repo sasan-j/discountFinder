@@ -29,12 +29,14 @@
         <item>Add location manually</item>
     </string-array>
     <string-array name="radius_location">
-        <item>5 miles</item>
-        <item>10 miles</item>
-        <item>15 miles</item>
-        <item>20 miles</item>
+        <item>Everywhere!</item>
+        <item>5 km</item>
+        <item>10 km</item>
+        <item>15 km</item>
+        <item>20 km</item>
     </string-array>
     <string-array name="radius_value">
+        <item>0</item>
         <item>5</item>
         <item>10</item>
         <item>15</item>
@@ -50,9 +52,6 @@
 
     <!-- Latitude, longitude format -->
     <string name="latitude_longitude">%1$.8f, %2$.8f</string>
-
-    <!-- Menu title -->
-    <string name="action_settings">Settings</string>
 
     <!-- Labels -->
     <string name="latlng">Lat/Long:</string>

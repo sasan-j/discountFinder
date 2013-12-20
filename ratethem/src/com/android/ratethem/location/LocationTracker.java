@@ -25,6 +25,7 @@ import android.widget.Toast;
 
 import com.android.ratethem.InsertData;
 import com.android.ratethem.R;
+import com.android.ratethem.SearchList;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.common.GooglePlayServicesClient.ConnectionCallbacks;
@@ -138,7 +139,11 @@ public class LocationTracker implements
 	    		//mLatitude = String.valueOf(currentLocation.getLatitude());
 	    		//mLongitude = String.valueOf(currentLocation.getLongitude());
 	    		location = currentLocation;
-	            ((InsertData) activity).onLocationReady();
+	    		
+	            if(activity instanceof InsertData) {
+	            	 ((InsertData) activity).onLocationReady();
+	            } else
+	            	((SearchList) activity).onLocationReady();
 	        }
 	    }
 
@@ -409,7 +414,10 @@ public class LocationTracker implements
 	            //mLocationEdit.setText(address);
 	            //mLocationEdit.setFocusable(false);
 	            currentAddress = address;
-	            ((InsertData) activity).onAddressReady();
+	            if(activity instanceof InsertData) {
+	            	 ((InsertData) activity).onAddressReady();
+	            } else
+	            	((SearchList) activity).onAddressReady();
 	        }
 	    }
 
