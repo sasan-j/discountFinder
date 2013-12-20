@@ -96,6 +96,8 @@
         android:layout_height="48dp"
         android:layout_alignTop="@+id/location"
         android:layout_toRightOf="@+id/location"
+        android:scaleType="centerCrop"
+        android:onClick="onLocationBtnClick"
         android:background="@drawable/location_off" />
     <RatingBar
         android:id="@+id/ratingBar"

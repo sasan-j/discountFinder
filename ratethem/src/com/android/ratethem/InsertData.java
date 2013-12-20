@@ -66,12 +66,14 @@ import android.widget.RatingBar.OnRatingBarChangeListener;
 
 public class InsertData extends FragmentActivity implements GooglePlayServicesClient.ConnectionCallbacks {
 
-	private ImageButton takepic, done;
+	private ImageButton takepic, done, locationBtn;
 	protected static final String LOG_TAG = "ratethem";
 	private RatingBar ratingBar;
 	private File mImageFile = null;
 	private String mItemName = null;
 	private String mItemCategory = null;
+	private Boolean isGettingAddress = false;
+	private Boolean isLocationServicesConnnected = false;
 
 	//for image capturing
 	private static final int ACTION_CAPTURE_IMAGE = 1;
@@ -380,6 +382,7 @@ public class InsertData extends FragmentActivity implements GooglePlayServicesCl
 		// instantiate rating bar and add listener.
 		initRatingBar();
 
+		locationBtn = (ImageButton) findViewById(R.id.LocationLogo);
 		//////////////////////////////////////////////////////////////
 		locationTracker = new LocationTracker(this,this, this);
 		//////////////////////////////////////////////////////////////
@@ -688,7 +691,8 @@ public class InsertData extends FragmentActivity implements GooglePlayServicesCl
         //mConnectionStatus.setText(R.string.connected);
 		Log.d(LOG_TAG,getString(R.string.connected));
         locationTracker.getLocation();
-        locationTracker.getAddress();
+        if(isGettingAddress)
+        	locationTracker.getAddress();
     }
 
     /*
@@ -699,7 +703,6 @@ public class InsertData extends FragmentActivity implements GooglePlayServicesCl
     public void onDisconnected() {
         //mConnectionStatus.setText(R.string.disconnected);
 		Log.d(LOG_TAG,getString(R.string.disconnected));
-
     }
     
     public void onLocationReady(){
@@ -709,7 +712,26 @@ public class InsertData extends FragmentActivity implements GooglePlayServicesCl
     }
     
     public void onAddressReady(){
-    	mLocationEdit.setText(locationTracker.getCurrentAddLocation());
+    	mLocationInformation = locationTracker.getCurrentAddLocation();
+    	mLocationEdit.setText(mLocationInformation);
+    }
+    
+    public void onLocationBtnClick(View v){
+    	if(isGettingAddress){
+    		locationBtn.setImageResource(R.drawable.location_off);
+    		isGettingAddress = false;
+        	mLocationEdit.setFocusable(true);
+        	mLocationEdit.setFocusableInTouchMode(true);
+        	mLocationEdit.setTextColor(getResources().getColor(R.color.black));
+    	} 
+    	else {
+    		locationBtn.setImageResource(R.drawable.location_on);
+    		isGettingAddress = true;
+        	locationTracker.getAddress();
+        	mLocationEdit.setFocusable(false);
+        	mLocationEdit.setTextColor(getResources().getColor(R.color.common_signin_btn_text_light));
+    	}
+
     }
 
 }

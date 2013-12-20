@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="special_green">#365936</color>
+    <color name="text_field_white_bg">#FFFFFF</color>
+    <color name="black">#000000</color>
     
 </resources>
