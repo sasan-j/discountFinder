@@ -462,7 +462,7 @@ public class SearchList extends ListActivity implements GooglePlayServicesClient
 		if(checkNetwork())
 			new GetHttpData().execute();
 		else
-			Toast.makeText(getBaseContext(),"Sorry you need an internet connection to post discounts",Toast.LENGTH_LONG).show();
+			Toast.makeText(getBaseContext(),"Sorry you need an internet connection to search for discounts",Toast.LENGTH_LONG).show();
     }
     
     public void onAddressReady(){
