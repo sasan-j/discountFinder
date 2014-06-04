@@ -11,7 +11,6 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.IntentSender;
-import android.content.SharedPreferences;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;

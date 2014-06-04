@@ -1,20 +1,14 @@
 package com.android.ratethem;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
-import com.android.ratethem.server.ServerGet;
 import com.android.ratethem.util.*;
 import com.androidquery.AQuery;
 
-import android.os.AsyncTask;
 import android.os.Bundle;
 
 import android.app.Activity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;

@@ -1,6 +1,5 @@
 package com.android.ratethem;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,7 +15,6 @@ import com.android.ratethem.util.RateThemUtil;
 
 import android.app.Activity;
 import android.app.ListActivity;
-import android.content.ContentProviderClient;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -28,7 +26,6 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.RemoteException;
 import android.support.v4.widget.CursorAdapter;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -102,22 +99,6 @@ public class SearchList extends ListActivity implements GooglePlayServicesClient
 		//new GetHttpData().execute();
 	}
 	
-	private void getCursorFromDbToDisplay(){
-		ContentProviderClient client = getBaseContext().getContentResolver()
-				.acquireContentProviderClient(RateThemUtil.RATE_URI);
-		Cursor cursor = null;
-		try {
-			cursor = client.query(RateThemUtil.RATE_URI, null,
-					RateAgent.RateProvider.ITEM_CATEGORY + "=\"" + mItemCategory + "\"",
-					null, null);
-		} catch (RemoteException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		Log.d(TAG, "Cursor: " + cursor.getCount());
-		mAdapter = new RateAdapter(getBaseContext(), cursor);
-		setListAdapter(mAdapter);
-	}
 	
 	private class GetHttpData extends AsyncTask<Void, Void, Void>{
 
@@ -164,50 +145,6 @@ public class SearchList extends ListActivity implements GooglePlayServicesClient
 			setListAdapter(new ListAdapter(SearchList.this, R.layout.activity_data_list, list));
 		}
 	}
-	
-	private void getInformationFromCursor(int position){
-		Cursor cursor = mAdapter.getCursor();
-		cursor.moveToPosition(position);
-		mItemName = cursor.getString(cursor
-				.getColumnIndex(RateAgent.RateProvider.ITEM_NAME));
-		mPlaceName = cursor.getString(cursor
-				.getColumnIndex(RateAgent.RateProvider.ITEM_PLACE_NAME));
-		mLocation = cursor.getString(cursor
-				.getColumnIndex(RateAgent.RateProvider.ITEM_LOC));
-		mComments = cursor.getString(cursor
-				.getColumnIndex(RateAgent.RateProvider.ITEM_COMMENT));
-		mPicPath = cursor.getString(cursor
-				.getColumnIndex(RateAgent.RateProvider.ITEM_PIC));
-		mRating = cursor.getString(cursor
-				.getColumnIndex(RateAgent.RateProvider.ITEM_RATING));
-	}
-	
-	
-	private void getInformationFromServer(int position){
-		ItemInfo currentItemInfo = list.get(position);
-		ServerGet serGet = new ServerGet();
-		JSONArray jArray = serGet.getJSONItemDetails(currentItemInfo.getmItemID());
-		try {
-		for(int i = 0; i < jArray.length(); i++){				
-				JSONObject itemName = jArray.getJSONObject(i);
-				mItemID = itemName.getString(RateThemUtil.ITEM_ID);				
-				mItemCategory = itemName.getString(RateThemUtil.ITEM_CATEGORY);
-				mItemName = itemName.getString(RateThemUtil.ITEM_NAME);
-				mRating = itemName.getString(RateThemUtil.ITEM_RATING);					
-				mPlaceName = itemName.getString(RateThemUtil.ITEM_PLACE_NAME);
-				mLocation = itemName.getString(RateThemUtil.ITEM_LOC);
-				mLocLatitude = itemName.getString(RateThemUtil.ITEM_LATITUDE);
-				mLocLongitude = itemName.getString(RateThemUtil.ITEM_LONGITUDE);
-				mComments = itemName.getString(RateThemUtil.ITEM_COMMENT);
-				mPicPath = itemName.getString(RateThemUtil.ITEM_PIC);
-		}
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-	
-	
 	
 
 	private AdapterView.OnItemClickListener mItemListener = new AdapterView.OnItemClickListener() {
